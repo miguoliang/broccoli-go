@@ -15,6 +15,7 @@ jobs:
       - aws-cli/setup:
           region: us-east-1
           profile_name: default
+      - run: go version
       - run: go build
       - run: |
           # Constants
