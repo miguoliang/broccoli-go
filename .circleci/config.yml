@@ -1,12 +1,10 @@
 version: '2.1'
 orbs:
   aws-cli: circleci/aws-cli@4.1.2
-  go: circleci/go@1.11.0
 jobs:
   build:
-    machine:
-      image: ubuntu-2204:2023.10.1
-      docker_layer_caching: true
+    docker:
+      - image: cimg/go:1.22.1
     resource_class: arm.medium
     steps:
       - checkout
@@ -16,16 +14,7 @@ jobs:
       - aws-cli/setup:
           region: us-east-1
           profile_name: default
-      - go/load-cache # Load cached Go modules.
-      - go/mod-download # Run 'go mod download'.
-      - go/save-cache # Save Go modules to cache.
-      - go/test: # Runs 'go test ./...' but includes extensive parameterization for finer tuning.
-          covermode: atomic
-          failfast: true
-          race: true
-      - persist_to_workspace:
-          root: ~/project
-          paths: .
+      - run: go get && go build ./... && go test ./...
       - run: |
           # Constants
           S3_BUCKET=lambda-layers-1684737774331
