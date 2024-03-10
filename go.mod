@@ -1,4 +1,4 @@
-module hello-golang
+module broccoli-go
 
 go 1.22
 
