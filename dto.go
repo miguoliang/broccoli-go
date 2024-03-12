@@ -1,12 +1,23 @@
 package main
 
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
 type PageParams struct {
-	Page int `json:"page"`
-	Size int `json:"size"`
+	Page int `form:"page"`
+	Size int `form:"size"`
+}
+
+type PageResponse[T any] struct {
+	Total int64 `json:"total"`
+	Page  int   `json:"page"`
+	Size  int   `json:"size"`
+	Data  []T   `json:"data"`
 }
 
 type SearchVerticesRequest struct {
-	Q string `json:"q"`
+	Q string `form:"q"`
 	PageParams
 }
 

@@ -44,46 +44,42 @@ func findVertexByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	var vertex Vertex
 	if result := db.First(&vertex, id); result.Error != nil {
-		c.JSON(404, gin.H{"error": "not found"})
+		c.JSON(404, ErrorResponse{Error: "vertex not found"})
 		return
 	}
-	c.JSON(200, gin.H{
-		"id":   vertex.ID,
-		"name": vertex.Name,
-		"type": vertex.Type,
-	})
+	c.JSON(200, vertex)
 }
 
 func searchVerticesHandler(c *gin.Context) {
 	var searchVerticesRequest SearchVerticesRequest
 	if err := c.ShouldBindQuery(&searchVerticesRequest); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, ErrorResponse{Error: err.Error()})
 		return
 	}
 	var vertices []Vertex
 	limit := searchVerticesRequest.Size
 	offset := (searchVerticesRequest.Page - 1) * limit
 	if result := db.Offset(offset).Limit(limit).Where("name LIKE ?", "%"+searchVerticesRequest.Q+"%").Find(&vertices); result.Error != nil {
-		c.JSON(500, gin.H{"error": result.Error.Error()})
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
 		return
 	}
 	var total int64
 	if result := db.Model(&Vertex{}).Where("name LIKE ?", "%"+searchVerticesRequest.Q+"%").Count(&total); result.Error != nil {
-		c.JSON(500, gin.H{"error": result.Error.Error()})
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
 		return
 	}
-	c.JSON(200, gin.H{
-		"total": total,
-		"page":  searchVerticesRequest.Page,
-		"size":  searchVerticesRequest.Size,
-		"data":  vertices,
+	c.JSON(200, PageResponse[Vertex]{
+		Total: total,
+		Page:  searchVerticesRequest.Page,
+		Size:  searchVerticesRequest.Size,
+		Data:  vertices,
 	})
 }
 
 func createVertexHandler(c *gin.Context) {
 	var createVertexRequest CreateVertexRequest
 	if err := c.ShouldBindJSON(&createVertexRequest); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, ErrorResponse{Error: err.Error()})
 		return
 	}
 	var vertex Vertex
@@ -91,20 +87,20 @@ func createVertexHandler(c *gin.Context) {
 	vertex.Type = createVertexRequest.Type
 	if result := db.Create(&vertex); result.Error != nil {
 		if result.Error.Error() == "UNIQUE constraint failed: vertices.name, vertices.type" {
-			c.JSON(409, gin.H{"error": "name and type must be unique"})
+			c.JSON(409, ErrorResponse{Error: "name and type must be unique"})
 			return
 		}
-		c.JSON(500, gin.H{"error": result.Error.Error()})
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
 		return
 	}
-	c.JSON(200, gin.H{"id": vertex.ID})
+	c.JSON(201, CreateVertexResponse{ID: vertex.ID})
 }
 
 func deleteVertexByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	if result := db.Delete(&Vertex{}, id); result.Error != nil {
-		c.JSON(500, gin.H{"error": result.Error.Error()})
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
 		return
 	}
-	c.JSON(200, gin.H{})
+	c.JSON(204, nil)
 }
