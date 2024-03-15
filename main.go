@@ -1,4 +1,4 @@
-package main
+package broccoli_go
 
 import (
 	"github.com/gin-gonic/gin"
@@ -15,11 +15,9 @@ func main() {
 
 	// Migrate the schema
 	r := setUpRouter()
-
-	// Start the server
 	err := r.Run()
 	if err != nil {
-		panic("failed to start server")
+		panic(err)
 	}
 }
 

@@ -1,4 +1,4 @@
-package main
+package broccoli_go
 
 type ErrorResponse struct {
 	Error string `json:"error"`

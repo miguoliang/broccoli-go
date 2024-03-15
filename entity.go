@@ -1,4 +1,4 @@
-package main
+package broccoli_go
 
 import (
 	"gorm.io/gorm"
