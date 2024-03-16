@@ -27,6 +27,9 @@ func setUpRouter() *gin.Engine {
 	r.GET("/vertex", searchVerticesHandler)
 	r.POST("/vertex", createVertexHandler)
 	r.DELETE("/vertex/:id", deleteVertexByIdHandler)
+	r.POST("/vertex/:id/property", createVertexPropertyHandler)
+	r.POST("/edge", createEdgeHandler)
+	r.GET("/edge", searchEdgesHandler)
 	return r
 }
 
@@ -41,7 +44,7 @@ func connectDatabase() *gorm.DB {
 func findVertexByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	var vertex Vertex
-	if result := db.First(&vertex, id); result.Error != nil {
+	if result := db.Preload("Properties").First(&vertex, id); result.Error != nil {
 		c.JSON(404, ErrorResponse{Error: "vertex not found"})
 		return
 	}
@@ -56,6 +59,9 @@ func searchVerticesHandler(c *gin.Context) {
 	}
 	var vertices []Vertex
 	limit := searchVerticesRequest.Size
+	if limit == 0 {
+		limit = 10
+	}
 	offset := (searchVerticesRequest.Page - 1) * limit
 	if result := db.Offset(offset).Limit(limit).Where("name LIKE ?", "%"+searchVerticesRequest.Q+"%").Find(&vertices); result.Error != nil {
 		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
@@ -101,4 +107,87 @@ func deleteVertexByIdHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(204, nil)
+}
+
+func createEdgeHandler(c *gin.Context) {
+	var createEdgeRequest CreateEdgeRequest
+	if err := c.ShouldBindJSON(&createEdgeRequest); err != nil {
+		c.JSON(400, ErrorResponse{Error: err.Error()})
+		return
+	}
+	var edge Edge
+	edge.From = createEdgeRequest.From
+	edge.To = createEdgeRequest.To
+	edge.Type = createEdgeRequest.Type
+	if result := db.Create(&edge); result.Error != nil {
+		if result.Error.Error() == "UNIQUE constraint failed: edges.from, edges.to, edges.type" {
+			c.JSON(409, ErrorResponse{Error: "from, to and type must be unique"})
+			return
+		}
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
+		return
+	}
+	c.JSON(201, CreateEdgeResponse{ID: edge.ID})
+}
+
+func searchEdgesHandler(c *gin.Context) {
+	var searchEdgesRequest SearchEdgesRequest
+	if err := c.ShouldBindQuery(&searchEdgesRequest); err != nil {
+		c.JSON(400, ErrorResponse{Error: err.Error()})
+		return
+	}
+	var edges []Edge
+	limit := searchEdgesRequest.Size
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (searchEdgesRequest.Page - 1) * limit
+	if result := db.Offset(offset).
+		Where("`type` in ?", searchEdgesRequest.Type).
+		Where("`from` in ?", searchEdgesRequest.From).
+		Where("`to` in ?", searchEdgesRequest.To).
+		Limit(limit).
+		Find(&edges); result.Error != nil {
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
+		return
+	}
+
+	var total int64
+	if result := db.Model(&Edge{}).
+		Where("`type` in ?", searchEdgesRequest.Type).
+		Where("`from` in ?", searchEdgesRequest.From).
+		Where("`to` in ?", searchEdgesRequest.To).
+		Count(&total); result.Error != nil {
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
+		return
+	}
+	c.JSON(200, PageResponse[Edge]{
+		Total: total,
+		Page:  searchEdgesRequest.Page,
+		Size:  searchEdgesRequest.Size,
+		Data:  edges,
+	})
+}
+
+func createVertexPropertyHandler(c *gin.Context) {
+	var createVertexPropertyRequest CreateVertexPropertyRequest
+	if err := c.ShouldBindJSON(&createVertexPropertyRequest); err != nil {
+		c.JSON(400, ErrorResponse{Error: err.Error()})
+		return
+	}
+	var vertex Vertex
+	var id = c.Param("id")
+	if result := db.First(&vertex, id); result.Error != nil {
+		c.JSON(404, ErrorResponse{Error: "vertex not found"})
+		return
+	}
+	var vertexProperty VertexProperty
+	vertexProperty.VertexID = vertex.ID
+	vertexProperty.Key = createVertexPropertyRequest.Key
+	vertexProperty.Value = createVertexPropertyRequest.Value
+	if result := db.Create(&vertexProperty); result.Error != nil {
+		c.JSON(500, ErrorResponse{Error: result.Error.Error()})
+		return
+	}
+	c.JSON(201, CreateVertexPropertyResponse{ID: vertexProperty.ID})
 }

@@ -33,8 +33,8 @@ type VertexProperty struct {
 type Edge struct {
 	gorm.Model
 	ID            uint           `gorm:"primaryKey"`
-	FromVertex    uint           `gorm:"uniqueIndex:edge_idx"`
-	ToVertex      uint           `gorm:"uniqueIndex:edge_idx"`
+	From          uint           `gorm:"uniqueIndex:edge_idx"`
+	To            uint           `gorm:"uniqueIndex:edge_idx"`
 	Type          string         `gorm:"uniqueIndex:edge_idx"`
 	Properties    []EdgeProperty `gorm:"foreignKey:EdgeID"`
 	OperationInfo OperationInfo  `gorm:"embedded"`
