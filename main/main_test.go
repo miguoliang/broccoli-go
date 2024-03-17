@@ -1,4 +1,4 @@
-package broccoli_go
+package main
 
 import (
 	"bytes"
@@ -8,25 +8,6 @@ import (
 	"net/http/httptest"
 	"testing"
 )
-
-func autoMigrate() {
-	err := db.AutoMigrate(&Vertex{})
-	if err != nil {
-		return
-	}
-	err = db.AutoMigrate(&VertexProperty{})
-	if err != nil {
-		return
-	}
-	err = db.AutoMigrate(&Edge{})
-	if err != nil {
-		return
-	}
-	err = db.AutoMigrate(&EdgeProperty{})
-	if err != nil {
-		return
-	}
-}
 
 func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 

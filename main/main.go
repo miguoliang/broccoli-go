@@ -1,4 +1,4 @@
-package broccoli_go
+package main
 
 import (
 	"github.com/gin-gonic/gin"
@@ -12,6 +12,7 @@ func main() {
 
 	// Open a database connection
 	db = connectDatabase()
+	autoMigrate()
 
 	// Migrate the schema
 	r := setUpRouter()
@@ -23,14 +24,34 @@ func main() {
 
 func setUpRouter() *gin.Engine {
 	r := gin.Default()
-	r.GET("/vertex/:id", findVertexByIdHandler)
-	r.GET("/vertex", searchVerticesHandler)
-	r.POST("/vertex", createVertexHandler)
-	r.DELETE("/vertex/:id", deleteVertexByIdHandler)
-	r.POST("/vertex/:id/property", createVertexPropertyHandler)
-	r.POST("/edge", createEdgeHandler)
-	r.GET("/edge", searchEdgesHandler)
+	api := r.Group("/api")
+	api.GET("/vertex/:id", findVertexByIdHandler)
+	api.GET("/vertex", searchVerticesHandler)
+	api.POST("/vertex", createVertexHandler)
+	api.DELETE("/vertex/:id", deleteVertexByIdHandler)
+	api.POST("/vertex/:id/property", createVertexPropertyHandler)
+	api.POST("/edge", createEdgeHandler)
+	api.GET("/edge", searchEdgesHandler)
 	return r
+}
+
+func autoMigrate() {
+	err := db.AutoMigrate(&Vertex{})
+	if err != nil {
+		return
+	}
+	err = db.AutoMigrate(&VertexProperty{})
+	if err != nil {
+		return
+	}
+	err = db.AutoMigrate(&Edge{})
+	if err != nil {
+		return
+	}
+	err = db.AutoMigrate(&EdgeProperty{})
+	if err != nil {
+		return
+	}
 }
 
 func connectDatabase() *gorm.DB {
