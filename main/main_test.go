@@ -14,7 +14,7 @@ func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 	r := setUpRouter()
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", nil)
+	req := httptest.NewRequest("POST", "/api/vertex", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 400, w.Code)
@@ -35,7 +35,7 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -64,14 +64,14 @@ func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 201, w.Code)
 
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -85,7 +85,7 @@ func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 	r := setUpRouter()
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/vertex/0", nil)
+	req := httptest.NewRequest("GET", "/api/vertex/0", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 404, w.Code)
@@ -106,7 +106,7 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -119,7 +119,7 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	url := fmt.Sprintf("/vertex/%d", response.ID)
+	url := fmt.Sprintf("/api/vertex/%d", response.ID)
 	req = httptest.NewRequest("GET", url, nil)
 	r.ServeHTTP(w, req)
 
@@ -133,7 +133,7 @@ func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 	r := setUpRouter()
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/vertex?q=empty", nil)
+	req := httptest.NewRequest("GET", "/api/vertex?q=empty", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
@@ -161,14 +161,14 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 201, w.Code)
 
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("GET", "/vertex?q="+t.Name(), nil)
+	req = httptest.NewRequest("GET", "/api/vertex?q="+t.Name(), nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
@@ -190,7 +190,7 @@ func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T)
 	r := setUpRouter()
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("DELETE", "/vertex/0", nil)
+	req := httptest.NewRequest("DELETE", "/api/vertex/0", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 204, w.Code)
@@ -211,7 +211,7 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -224,7 +224,7 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	url := fmt.Sprintf("/vertex/%d", response.ID)
+	url := fmt.Sprintf("/api/vertex/%d", response.ID)
 	req = httptest.NewRequest("DELETE", url, nil)
 	r.ServeHTTP(w, req)
 
@@ -252,7 +252,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -273,7 +273,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	url := fmt.Sprintf("/vertex/%d/property", response.ID)
+	url := fmt.Sprintf("/api/vertex/%d/property", response.ID)
 	req = httptest.NewRequest("POST", url, bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
@@ -288,7 +288,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 	assert.NotEqual(t, "", property.ID)
 
 	w = httptest.NewRecorder()
-	url = fmt.Sprintf("/vertex/%d", response.ID)
+	url = fmt.Sprintf("/api/vertex/%d", response.ID)
 	req = httptest.NewRequest("GET", url, nil)
 	r.ServeHTTP(w, req)
 
@@ -309,7 +309,7 @@ func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 	r := setUpRouter()
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/edge", nil)
+	req := httptest.NewRequest("POST", "/api/edge", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 400, w.Code)
@@ -330,7 +330,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -350,7 +350,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 		t.Fatal(err)
 	}
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -372,7 +372,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/edge", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/edge", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -401,7 +401,7 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -421,7 +421,7 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 		t.Fatal(err)
 	}
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -443,14 +443,14 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/edge", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/edge", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 201, w.Code)
 
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/edge", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/edge", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -464,7 +464,7 @@ func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 	r := setUpRouter()
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/edge?from=0&to=0&type=0", nil)
+	req := httptest.NewRequest("GET", "/api/edge?from=0&to=0&type=0", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
@@ -493,7 +493,7 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req := httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -514,7 +514,7 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/vertex", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/vertex", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -536,14 +536,14 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req = httptest.NewRequest("POST", "/edge", bytes.NewReader(jsonData))
+	req = httptest.NewRequest("POST", "/api/edge", bytes.NewReader(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 201, w.Code)
 
 	w = httptest.NewRecorder()
-	url := fmt.Sprintf("/edge?from=%d&to=%d&type=%s", from.ID, to.ID, "test")
+	url := fmt.Sprintf("/api/edge?from=%d&to=%d&type=%s", from.ID, to.ID, "test")
 	req = httptest.NewRequest("GET", url, nil)
 	r.ServeHTTP(w, req)
 
