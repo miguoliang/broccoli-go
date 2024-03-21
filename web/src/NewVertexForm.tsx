@@ -19,17 +19,17 @@ export default function NewVertexForm() {
     mutationFn: async (variables) => {
       const response = await axios.post<CreateVertexResponse>(
         "/api/vertex",
-        variable,
+        variables,
       );
       return response.data;
-    ,
+    },
   });
 
   return (
     <Formik<CreateVertexRequest>
       initialValues={{
         name: "",
-        type: ""
+        type: "",
       }}
       validationSchema={CreateVertexSchema}
       validateOnBlur={false}
