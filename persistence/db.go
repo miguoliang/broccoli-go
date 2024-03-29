@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	db *gorm.DB
+	database *gorm.DB
 )
 
 func autoMigrate(db *gorm.DB) {
@@ -34,8 +34,9 @@ func init() {
 		panic(err)
 	}
 	autoMigrate(db)
+	database = db
 }
 
 func GetDatabaseConnection() *gorm.DB {
-	return db
+	return database
 }
