@@ -2,17 +2,14 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hiepd/cognito-go"
+	"github.com/miguoliang/broccoli-go/middleware"
 	"github.com/miguoliang/broccoli-go/resource"
 )
 
 func main() {
 
-	// Set up cognito
-	c, _ := cognito.NewCognitoClient("ap-southeast-2", "cognito-app", "xxx")
-
 	// Set up the router
-	r := setupRouter(c)
+	r := setupRouter(middleware.CheckJWT("user"))
 
 	// Run the server
 	err := r.Run()
@@ -21,18 +18,18 @@ func main() {
 	}
 }
 
-func setupRouter(c cognito.Client) *gin.Engine {
+func setupRouter(handlerFunc gin.HandlerFunc) *gin.Engine {
 	r := gin.Default()
-	api := r.Group("/api")
+	api := r.Group("/api", handlerFunc)
 
-	api.Group("/vertex", c.Authorize).
+	api.Group("/vertex").
 		GET("/:id", resource.FindVertexByIdHandler).
 		GET("", resource.SearchVerticesHandler).
 		POST("", resource.CreateVertexHandler).
 		DELETE("/:id", resource.DeleteVertexByIdHandler).
 		POST("/:id/property", resource.CreateVertexPropertyHandler)
 
-	api.Group("/edge", c.Authorize).
+	api.Group("/edge").
 		POST("", resource.CreateEdgeHandler).
 		GET("", resource.SearchEdgesHandler)
 	return r
