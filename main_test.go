@@ -5,13 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/assert/v2"
+	"github.com/miguoliang/broccoli-go/dto"
+	"github.com/miguoliang/broccoli-go/persistence"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
-	r := setUpRouter()
+	r := setupRouter(nil)
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("POST", "/api/vertex", nil)
@@ -22,11 +24,11 @@ func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
 func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -41,7 +43,7 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response CreateVertexResponse
+	var response dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -51,11 +53,11 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
 func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -80,9 +82,9 @@ func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 
 func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/vertex/0", nil)
@@ -93,11 +95,11 @@ func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
 func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -112,7 +114,7 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response CreateVertexResponse
+	var response dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -128,9 +130,9 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
 func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/vertex?q=empty", nil)
@@ -138,7 +140,7 @@ func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response PageResponse[Vertex]
+	var response dto.PageResponse[persistence.Vertex]
 	err := json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -148,11 +150,11 @@ func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 
 func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -173,7 +175,7 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response PageResponse[Vertex]
+	var response dto.PageResponse[persistence.Vertex]
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -185,9 +187,9 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
 func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("DELETE", "/api/vertex/0", nil)
@@ -198,11 +200,11 @@ func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T)
 
 func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -217,7 +219,7 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response CreateVertexResponse
+	var response dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -239,11 +241,11 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
 func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -258,13 +260,13 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response CreateVertexResponse
+	var response dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(CreateVertexPropertyRequest{
+	jsonData, err = json.Marshal(dto.CreateVertexPropertyRequest{
 		Key:   "test",
 		Value: "test",
 	})
@@ -280,7 +282,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var property CreateVertexPropertyResponse
+	var property dto.CreateVertexPropertyResponse
 	err = json.NewDecoder(w.Body).Decode(&property)
 	if err != nil {
 		t.Fatal(err)
@@ -294,7 +296,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var vertex Vertex
+	var vertex persistence.Vertex
 	err = json.NewDecoder(w.Body).Decode(&vertex)
 	if err != nil {
 		t.Fatal(err)
@@ -306,7 +308,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
-	r := setUpRouter()
+	r := setupRouter(nil)
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("POST", "/api/edge", nil)
@@ -317,11 +319,11 @@ func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -336,13 +338,13 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var from CreateVertexResponse
+	var from dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&from)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(CreateVertexRequest{
+	jsonData, err = json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name() + "2",
 		Type: "test",
 	})
@@ -356,13 +358,13 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var to CreateVertexResponse
+	var to dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(CreateEdgeRequest{
+	jsonData, err = json.Marshal(dto.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -378,7 +380,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response CreateEdgeResponse
+	var response dto.CreateEdgeResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -388,11 +390,11 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -407,13 +409,13 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var from CreateVertexResponse
+	var from dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&from)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(CreateVertexRequest{
+	jsonData, err = json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name() + "2",
 		Type: "test",
 	})
@@ -427,13 +429,13 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var to CreateVertexResponse
+	var to dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(CreateEdgeRequest{
+	jsonData, err = json.Marshal(dto.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -459,9 +461,9 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/edge?from=0&to=0&type=0", nil)
@@ -469,7 +471,7 @@ func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response PageResponse[Edge]
+	var response dto.PageResponse[persistence.Edge]
 	err := json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -480,11 +482,11 @@ func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
 func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
-	db = connectDatabase()
-	autoMigrate()
-	r := setUpRouter()
+	db = openDatabaseConnection()
+	autoMigrate(nil)
+	r := setupRouter(nil)
 
-	jsonData, err := json.Marshal(CreateVertexRequest{
+	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -499,13 +501,13 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var from CreateVertexResponse
+	var from dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&from)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(CreateVertexRequest{
+	jsonData, err = json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name() + "2",
 		Type: "test",
 	})
@@ -520,13 +522,13 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var to CreateVertexResponse
+	var to dto.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(CreateEdgeRequest{
+	jsonData, err = json.Marshal(dto.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -549,7 +551,7 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response PageResponse[Edge]
+	var response dto.PageResponse[persistence.Edge]
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
