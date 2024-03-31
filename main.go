@@ -1,21 +1,33 @@
 package main
 
 import (
+	"context"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/middleware"
 	"github.com/miguoliang/broccoli-go/resource"
 )
+
+var ginLambda *ginadapter.GinLambda
 
 func main() {
 
 	// Set up the router
 	r := setupRouter(middleware.CheckJWT("user"))
 
+	lambda.Start(Handler)
+
 	// Run the server
 	err := r.Run()
 	if err != nil {
 		panic(err)
 	}
+}
+
+func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return ginLambda.ProxyWithContext(ctx, req)
 }
 
 // @title Broccoli API
@@ -42,5 +54,8 @@ func setupRouter(handlerFunc gin.HandlerFunc) *gin.Engine {
 	api.Group("/edge").
 		POST("", resource.CreateEdgeHandler).
 		GET("", resource.SearchEdgesHandler)
+
+	ginLambda = ginadapter.New(r)
+
 	return r
 }
