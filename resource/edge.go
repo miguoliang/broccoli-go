@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/dto"
 	"github.com/miguoliang/broccoli-go/persistence"
+	"strings"
 )
 
 // CreateEdgeHandler
@@ -29,7 +30,7 @@ func CreateEdgeHandler(c *gin.Context) {
 	edge.Type = createEdgeRequest.Type
 	db := persistence.GetDatabaseConnection()
 	if result := db.Create(&edge); result.Error != nil {
-		if result.Error.Error() == "UNIQUE constraint failed: edges.from, edges.to, edges.type" {
+		if strings.Contains(result.Error.Error(), "UNIQUE constraint failed") {
 			c.JSON(409, dto.ErrorResponse{Error: "from, to and type must be unique"})
 			return
 		}

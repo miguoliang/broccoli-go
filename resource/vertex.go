@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/dto"
 	"github.com/miguoliang/broccoli-go/persistence"
+	"strings"
 )
 
 // FindVertexByIdHandler
@@ -90,7 +91,7 @@ func CreateVertexHandler(c *gin.Context) {
 	vertex.Type = createVertexRequest.Type
 	db := persistence.GetDatabaseConnection()
 	if result := db.Create(&vertex); result.Error != nil {
-		if result.Error.Error() == "UNIQUE constraint failed: vertices.name, vertices.type" {
+		if strings.Contains(result.Error.Error(), "UNIQUE constraint failed") {
 			c.JSON(409, dto.ErrorResponse{Error: "name and type must be unique"})
 			return
 		}

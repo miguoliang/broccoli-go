@@ -5,7 +5,7 @@ import { useAuthStore } from "./oidc.ts";
 const customAxios = axios.create({
   paramsSerializer: (params) => {
     // Serialize query parameters as JSON
-    return qs.stringify(params, { arrayFormat: "brackets" });
+    return qs.stringify(params, { arrayFormat: "repeat" });
   },
 });
 
@@ -14,9 +14,9 @@ customAxios.interceptors.request.use(
     console.log("intercepting request");
     const user = useAuthStore.getState().user;
     if (user) {
-      // Add the access token to the Authorization header
-      console.log("Adding access token to request: ", user.access_token);
-      config.headers.Authorization = `Bearer ${user.access_token}`;
+      // Add the id token to the Authorization header
+      console.log("Adding id token to request: ", user.id_token);
+      config.headers.Authorization = `Bearer ${user.id_token}`;
     }
     return config;
   },

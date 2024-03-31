@@ -72,27 +72,16 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 			Runtime:     awslambda.Runtime_PROVIDED_AL2023(),
 			Environment: nil,
 			Entry:       jsii.String("../"),
-			Bundling: &awscdklambdagoalpha.BundlingOptions{
-				Environment: &map[string]*string{
-					"CGO_ENABLED": jsii.String("1"),
-				},
-			},
 		})
 
 	api := awsapigateway.NewRestApi(stack, jsii.String("broccoli-go-api"), nil)
-	integration := awsapigateway.NewLambdaIntegration(function, nil)
-	api.Root().AddMethod(jsii.String("ANY"), integration, &awsapigateway.MethodOptions{
-		AuthorizationType: awsapigateway.AuthorizationType_COGNITO,
-		Authorizer:        authorizer,
-		ApiKeyRequired:    jsii.Bool(true),
-	})
-
-	awscdk.NewCfnOutput(stack, jsii.String("broccoli-go-api-url"), &awscdk.CfnOutputProps{
-		Value: api.Url(),
-	})
-
-	awscdk.NewCfnOutput(stack, jsii.String("broccoli-go-function"), &awscdk.CfnOutputProps{
-		Value: function.FunctionArn(),
+	api.Root().AddProxy(&awsapigateway.ProxyResourceOptions{
+		AnyMethod:          jsii.Bool(true),
+		DefaultIntegration: awsapigateway.NewLambdaIntegration(function, nil),
+		DefaultMethodOptions: &awsapigateway.MethodOptions{
+			AuthorizationType: awsapigateway.AuthorizationType_COGNITO,
+			Authorizer:        authorizer,
+		},
 	})
 
 	return stack

@@ -18,7 +18,7 @@ query.append("response_type", "code");
 query.append("scope", scope);
 query.append("redirect_uri", window.location.origin);
 
-export const signUpUrl = `https://okra-test.auth.us-east-1.amazoncognito.com/signup?${query.toString()}`;
+export const signUpUrl = `https://broccoli-go-user-pool-domain.auth.us-east-1.amazoncognito.com/signup?${query.toString()}`;
 export const signOutUrl = signUpUrl.replace(/signup/, "logout");
 
 const config: UserManagerSettings = {

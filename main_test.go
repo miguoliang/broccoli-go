@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/go-playground/assert/v2"
 	"github.com/miguoliang/broccoli-go/dto"
-	"github.com/miguoliang/broccoli-go/mock"
 	"github.com/miguoliang/broccoli-go/persistence"
 	"net/http/httptest"
 	"testing"
@@ -14,7 +13,7 @@ import (
 
 func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("POST", "/api/vertex", nil)
@@ -25,7 +24,7 @@ func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
 func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -52,7 +51,7 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
 func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -79,7 +78,7 @@ func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 
 func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/vertex/0", nil)
@@ -90,7 +89,7 @@ func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
 func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -123,7 +122,7 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
 func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/vertex?q=empty", nil)
@@ -141,7 +140,7 @@ func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 
 func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -176,7 +175,7 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
 func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("DELETE", "/api/vertex/0", nil)
@@ -187,7 +186,7 @@ func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T)
 
 func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -226,7 +225,7 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
 func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -291,7 +290,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("POST", "/api/edge", nil)
@@ -302,7 +301,7 @@ func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -371,7 +370,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -440,7 +439,7 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/edge?from=0&to=0&type=0", nil)
@@ -459,7 +458,7 @@ func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
 func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
-	r := setupRouter(mock.Authorizer())
+	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
