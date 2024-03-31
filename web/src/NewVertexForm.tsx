@@ -1,32 +1,17 @@
-import { DefaultError, useMutation } from "@tanstack/react-query";
-import { CreateVertexRequest, CreateVertexResponse } from "./dto.tsx";
-import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import { DtoCreateVertexRequest, useCreateVertex } from "./api.ts";
 
 const CreateVertexSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   type: Yup.string().required("Type is required"),
 });
 
-export default function NewVertexForm() {
-  const mutation = useMutation<
-    CreateVertexResponse,
-    DefaultError,
-    CreateVertexRequest
-  >({
-    mutationKey: ["createVertex"],
-    mutationFn: async (variables) => {
-      const response = await axios.post<CreateVertexResponse>(
-        "/api/vertex",
-        variables,
-      );
-      return response.data;
-    },
-  });
+const NewVertexForm = () => {
+  const mutation = useCreateVertex();
 
   return (
-    <Formik<CreateVertexRequest>
+    <Formik<DtoCreateVertexRequest>
       initialValues={{
         name: "",
         type: "",
@@ -34,7 +19,7 @@ export default function NewVertexForm() {
       validationSchema={CreateVertexSchema}
       validateOnBlur={false}
       validateOnChange
-      onSubmit={(values) => mutation.mutate(values)}
+      onSubmit={(values) => mutation.mutate({ data: values })}
     >
       {({ errors, touched }) => (
         <Form>
@@ -49,4 +34,6 @@ export default function NewVertexForm() {
       )}
     </Formik>
   );
-}
+};
+
+export default NewVertexForm;

@@ -6,6 +6,18 @@ import (
 	"github.com/miguoliang/broccoli-go/persistence"
 )
 
+// CreateVertexPropertyHandler
+// @Summary Create vertex property
+// @Description Create vertex property
+// @ID create-vertex-property
+// @Produce json
+// @Param id path int true "Vertex ID"
+// @Param request body dto.CreateVertexPropertyRequest true "Request body"
+// @Success 201 {object} dto.CreateVertexPropertyResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /vertex/{id}/property [post]
 func CreateVertexPropertyHandler(c *gin.Context) {
 	var createVertexPropertyRequest dto.CreateVertexPropertyRequest
 	if err := c.ShouldBindJSON(&createVertexPropertyRequest); err != nil {

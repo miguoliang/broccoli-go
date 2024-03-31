@@ -18,6 +18,16 @@ func main() {
 	}
 }
 
+// @title Broccoli API
+// @description This is the API for Broccoli
+// @version 1.0
+// @host localhost:8080
+// @BasePath /api
+// @schemes http
+// @schemes https
+// @contact.name Guoliang Mi
+// @contact.email boymgl@qq.com
+// @contact.url https://miguoliang.com
 func setupRouter(handlerFunc gin.HandlerFunc) *gin.Engine {
 	r := gin.Default()
 	api := r.Group("/api", handlerFunc)

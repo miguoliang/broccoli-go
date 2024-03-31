@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/assert/v2"
-	"github.com/miguoliang/broccoli-go/dto"
 	"github.com/miguoliang/broccoli-go/mock"
 	"github.com/miguoliang/broccoli-go/persistence"
+	"github.com/miguoliang/broccoli-go/resource"
 	"net/http/httptest"
 	"testing"
 )
@@ -27,7 +27,7 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -42,7 +42,7 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response dto.CreateVertexResponse
+	var response resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +54,7 @@ func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -92,7 +92,7 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -107,7 +107,7 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response dto.CreateVertexResponse
+	var response resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -131,7 +131,7 @@ func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response dto.PageResponse[persistence.Vertex]
+	var response resource.PageResponse[persistence.Vertex]
 	err := json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -143,7 +143,7 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -164,7 +164,7 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response dto.PageResponse[persistence.Vertex]
+	var response resource.PageResponse[persistence.Vertex]
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -189,7 +189,7 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -204,7 +204,7 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response dto.CreateVertexResponse
+	var response resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -228,7 +228,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -243,13 +243,13 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response dto.CreateVertexResponse
+	var response resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(dto.CreateVertexPropertyRequest{
+	jsonData, err = json.Marshal(resource.CreateVertexPropertyRequest{
 		Key:   "test",
 		Value: "test",
 	})
@@ -265,7 +265,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var property dto.CreateVertexPropertyResponse
+	var property resource.CreateVertexPropertyResponse
 	err = json.NewDecoder(w.Body).Decode(&property)
 	if err != nil {
 		t.Fatal(err)
@@ -304,7 +304,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -319,13 +319,13 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var from dto.CreateVertexResponse
+	var from resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&from)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(dto.CreateVertexRequest{
+	jsonData, err = json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name() + "2",
 		Type: "test",
 	})
@@ -339,13 +339,13 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var to dto.CreateVertexResponse
+	var to resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(dto.CreateEdgeRequest{
+	jsonData, err = json.Marshal(resource.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -361,7 +361,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var response dto.CreateEdgeResponse
+	var response resource.CreateEdgeResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -373,7 +373,7 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -388,13 +388,13 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var from dto.CreateVertexResponse
+	var from resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&from)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(dto.CreateVertexRequest{
+	jsonData, err = json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name() + "2",
 		Type: "test",
 	})
@@ -408,13 +408,13 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var to dto.CreateVertexResponse
+	var to resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(dto.CreateEdgeRequest{
+	jsonData, err = json.Marshal(resource.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -448,7 +448,7 @@ func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response dto.PageResponse[persistence.Edge]
+	var response resource.PageResponse[persistence.Edge]
 	err := json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)
@@ -461,7 +461,7 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	r := setupRouter(mock.Authorizer())
 
-	jsonData, err := json.Marshal(dto.CreateVertexRequest{
+	jsonData, err := json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
 	})
@@ -476,13 +476,13 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var from dto.CreateVertexResponse
+	var from resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&from)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(dto.CreateVertexRequest{
+	jsonData, err = json.Marshal(resource.CreateVertexRequest{
 		Name: t.Name() + "2",
 		Type: "test",
 	})
@@ -497,13 +497,13 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	assert.Equal(t, 201, w.Code)
 
-	var to dto.CreateVertexResponse
+	var to resource.CreateVertexResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	jsonData, err = json.Marshal(dto.CreateEdgeRequest{
+	jsonData, err = json.Marshal(resource.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -526,7 +526,7 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	var response dto.PageResponse[persistence.Edge]
+	var response resource.PageResponse[persistence.Edge]
 	err = json.NewDecoder(w.Body).Decode(&response)
 	if err != nil {
 		t.Fatal(err)

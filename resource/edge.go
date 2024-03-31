@@ -6,6 +6,17 @@ import (
 	"github.com/miguoliang/broccoli-go/persistence"
 )
 
+// CreateEdgeHandler
+// @Summary Create edge
+// @Description Create edge
+// @ID create-edge
+// @Produce json
+// @Param request body dto.CreateEdgeRequest true "Request body"
+// @Success 201 {object} dto.CreateEdgeResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 409 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /edge [post]
 func CreateEdgeHandler(c *gin.Context) {
 	var createEdgeRequest dto.CreateEdgeRequest
 	if err := c.ShouldBindJSON(&createEdgeRequest); err != nil {
@@ -28,6 +39,20 @@ func CreateEdgeHandler(c *gin.Context) {
 	c.JSON(201, dto.CreateEdgeResponse{ID: edge.ID})
 }
 
+// SearchEdgesHandler
+// @Summary Search edges
+// @Description Search edges
+// @ID search-edges
+// @Produce json
+// @Param type query string false "Type"
+// @Param from query string false "From"
+// @Param to query string false "To"
+// @Param page query int false "Page"
+// @Param size query int false "Size"
+// @Success 200 {object} dto.PageResponse[persistence.Edge]
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /edge [get]
 func SearchEdgesHandler(c *gin.Context) {
 	var searchEdgesRequest dto.SearchEdgesRequest
 	if err := c.ShouldBindQuery(&searchEdgesRequest); err != nil {

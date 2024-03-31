@@ -12,7 +12,7 @@ import (
 // @ID find-vertex-by-id
 // @Produce json
 // @Param id path int true "Vertex ID"
-// @Success 200 {object} Vertex
+// @Success 200 {object} persistence.Vertex
 // @Failure 404 {object} dto.ErrorResponse
 // @Router /vertex/{id} [get]
 func FindVertexByIdHandler(c *gin.Context) {
@@ -26,6 +26,17 @@ func FindVertexByIdHandler(c *gin.Context) {
 	c.JSON(200, vertex)
 }
 
+// SearchVerticesHandler
+// @Summary Search vertices
+// @Description Search vertices
+// @ID search-vertices
+// @Produce json
+// @Param q query string true "Search query"
+// @Param page query int false "Page number"
+// @Param size query int false "Page size"
+// @Success 200 {object} dto.PageResponse[persistence.Vertex]
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /vertex [get]
 func SearchVerticesHandler(c *gin.Context) {
 	var searchVerticesRequest dto.SearchVerticesRequest
 	if err := c.ShouldBindQuery(&searchVerticesRequest); err != nil {
@@ -56,6 +67,18 @@ func SearchVerticesHandler(c *gin.Context) {
 	})
 }
 
+// CreateVertexHandler
+// @Summary Create vertex
+// @Description Create vertex
+// @ID create-vertex
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateVertexRequest true "Create Vertex Request"
+// @Success 201 {object} dto.CreateVertexResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 409 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /vertex [post]
 func CreateVertexHandler(c *gin.Context) {
 	var createVertexRequest dto.CreateVertexRequest
 	if err := c.ShouldBindJSON(&createVertexRequest); err != nil {
@@ -77,6 +100,15 @@ func CreateVertexHandler(c *gin.Context) {
 	c.JSON(201, dto.CreateVertexResponse{ID: vertex.ID})
 }
 
+// DeleteVertexByIdHandler
+// @Summary Delete vertex by ID
+// @Description Delete vertex by ID
+// @ID delete-vertex-by-id
+// @Produce json
+// @Param id path int true "Vertex ID"
+// @Success 204
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /vertex/{id} [delete]
 func DeleteVertexByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 	db := persistence.GetDatabaseConnection()

@@ -27,5 +27,6 @@ go.work
 /build/
 /dist/
 /out/
+/docs/
 
 broccoli-go

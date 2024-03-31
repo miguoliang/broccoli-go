@@ -1,34 +1,16 @@
-import { SearchVerticesRequest, SearchVerticesResponse } from "./dto.tsx";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { SearchVerticesParams, useSearchVertices } from "./api.ts";
 
-export default function SearchVerticesView({
+const SearchVerticesView = ({
   q = "",
   page = 0,
   size = 10,
-}: Readonly<Partial<SearchVerticesRequest>>) {
-  const { data } = useQuery({
-    queryKey: ["searchVertices", q, page, size],
-    queryFn: async ({ queryKey }) => {
-      const [, q, page, size] = queryKey;
-      const searchParams = new URLSearchParams();
-      searchParams.set("q", q.toString());
-      searchParams.set("page", page.toString());
-      searchParams.set("size", size.toString());
-      const url = "/api/vertex?" + searchParams.toString();
-      const response = await axios.get<SearchVerticesResponse>(url);
-      return response.data;
-    },
-    initialData: {
-      page: 0,
-      size: 10,
-      total: 0,
-      data: [],
-    } as SearchVerticesResponse,
-  });
+}: Readonly<Partial<SearchVerticesParams>>) => {
+  const { data } = useSearchVertices({ q, page, size });
   return (
     <ul>
       {data?.data?.map((vertex) => <li key={vertex.id}>{vertex.name}</li>)}
     </ul>
   );
-}
+};
+
+export default SearchVerticesView;

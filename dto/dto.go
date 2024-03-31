@@ -55,12 +55,3 @@ type CreateVertexPropertyRequest struct {
 type CreateVertexPropertyResponse struct {
 	ID uint `json:"id"`
 }
-
-type CreateUserRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type CreateUserResponse struct {
-	ID string `json:"id"`
-}

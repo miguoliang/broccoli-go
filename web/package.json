@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:api-v2": "swag init -d ../ -o ../docs --ot json",
+    "generate:api-v3": "openapi-generator-cli generate -i ../docs/swagger.json -o ../docs/v3 -g openapi-yaml --additional-properties=x-extension.openapi=3.0.0",
+    "generate:orval": "orval generate --config orval.config.cjs",
+    "generate": "npm run generate:api-v2 && npm run generate:api-v3 && npm run generate:orval"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
@@ -17,17 +21,22 @@
     "@tanstack/react-query-devtools": "^5.28.4",
     "@tanstack/react-table": "^8.15.0",
     "axios": "^1.6.8",
+    "downshift": "^9.0.0",
     "formik": "^2.4.5",
     "lodash-es": "^4.17.21",
+    "oidc-client-ts": "^3.0.1",
+    "qs": "^6.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.3",
-    "react-select": "^5.8.0",
     "reactflow": "^11.10.4",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
+    "@types/qs": "^6.9.14",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
@@ -37,6 +46,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "orval": "^6.25.0",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
@@ -46,6 +56,8 @@
   "prettier": {
     "arrowParens": "always",
     "tabWidth": 2,
-    "useTabs": false
+    "useTabs": false,
+    "semi": true,
+    "trailingComma": "all"
   }
 }
