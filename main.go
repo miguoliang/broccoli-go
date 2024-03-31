@@ -6,7 +6,6 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
-	"github.com/miguoliang/broccoli-go/middleware"
 	"github.com/miguoliang/broccoli-go/resource"
 )
 
@@ -15,7 +14,7 @@ var ginLambda *ginadapter.GinLambda
 func main() {
 
 	// Set up the router
-	r := setupRouter(middleware.CheckJWT("user"))
+	r := setupRouter()
 
 	lambda.Start(Handler)
 
@@ -40,9 +39,9 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 // @contact.name Guoliang Mi
 // @contact.email boymgl@qq.com
 // @contact.url https://miguoliang.com
-func setupRouter(handlerFunc gin.HandlerFunc) *gin.Engine {
+func setupRouter() *gin.Engine {
 	r := gin.Default()
-	api := r.Group("/api", handlerFunc)
+	api := r.Group("/api")
 
 	api.Group("/vertex").
 		GET("/:id", resource.FindVertexByIdHandler).

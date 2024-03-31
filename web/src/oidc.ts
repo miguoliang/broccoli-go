@@ -6,10 +6,10 @@ import {
 } from "oidc-client-ts";
 import { create } from "zustand";
 
-const clientId = "3e2lpi6o9804lrd46gbbubeoqt";
+const clientId = "5p99s5nl7nha5tfnpik3r0rb7j";
 const scope = "openid profile aws.cognito.signin.user.admin";
 const authority =
-  "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_wqKTwXm3J";
+  "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_Qbzi9lvVB";
 
 // Create cognito sign-up & sign-out url
 const query = new URLSearchParams();
@@ -24,7 +24,6 @@ export const signOutUrl = signUpUrl.replace(/signup/, "logout");
 const config: UserManagerSettings = {
   authority, // Replace with actual endpoint
   client_id: clientId, // Replace with actual client ID
-  client_secret: "fo68ccbmsvfc37gf8d33h6cp79e54tjjgfent3mf0fehe7grlud", // Replace with actual client secret
   redirect_uri: "http://localhost:5173/", // Adjust based on your redirect logic
   revokeTokenTypes: ["refresh_token"],
   automaticSilentRenew: false,
