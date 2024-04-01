@@ -74,8 +74,16 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 			Entry:       jsii.String("../"),
 		})
 
-	api := awsapigateway.NewRestApi(stack, jsii.String("broccoli-go-api"), nil)
-	api.Root().AddProxy(&awsapigateway.ProxyResourceOptions{
+	app := awsapigateway.NewRestApi(stack, jsii.String("broccoli-go-api"), nil)
+
+	webhook := app.Root().AddResource(jsii.String("webhook"), nil)
+	webhook.AddProxy(&awsapigateway.ProxyResourceOptions{
+		AnyMethod:          jsii.Bool(true),
+		DefaultIntegration: awsapigateway.NewLambdaIntegration(function, nil),
+	})
+
+	api := app.Root().AddResource(jsii.String("api"), nil)
+	api.AddProxy(&awsapigateway.ProxyResourceOptions{
 		AnyMethod:          jsii.Bool(true),
 		DefaultIntegration: awsapigateway.NewLambdaIntegration(function, nil),
 		DefaultMethodOptions: &awsapigateway.MethodOptions{

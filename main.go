@@ -7,6 +7,7 @@ import (
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/resource"
+	"github.com/miguoliang/broccoli-go/webhook"
 )
 
 var ginLambda *ginadapter.GinLambda
@@ -41,6 +42,10 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 // @contact.url https://miguoliang.com
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+
+	r.Group("/webhook").
+		POST("/stripe", webhook.StripeWebhookHandler)
+
 	api := r.Group("/api")
 
 	api.Group("/vertex").
