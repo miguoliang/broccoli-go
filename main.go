@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/resource"
 	"github.com/miguoliang/broccoli-go/webhook"
+	"os"
 )
 
 var ginLambda *ginadapter.GinLambda
@@ -17,12 +18,15 @@ func main() {
 	// Set up the router
 	r := setupRouter()
 
-	lambda.Start(Handler)
-
-	// Run the server
-	err := r.Run()
-	if err != nil {
-		panic(err)
+	if os.Getenv("LAMBDA_RUNTIME_DIR") != "" {
+		// Running on AWS Lambda
+		lambda.Start(Handler)
+	} else {
+		// Running on local
+		err := r.Run()
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
