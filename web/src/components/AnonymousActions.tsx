@@ -14,7 +14,7 @@ export default function AnonymousActions() {
   }, []);
 
   return (
-    <ul className={"flex space-x-2"}>
+    <ul className={"flex space-x-2 ml-auto"}>
       <li>
         <button
           className={"p-2 rounded-md bg-blue-500 text-white"}

@@ -39,7 +39,7 @@ export default function SearchBox() {
           <div className="p-2 border rounded-md flex justify-between">
             <input
               {...getInputProps()}
-              className={"border-0 outline-0"}
+              className={"border-0 outline-0 flex-grow"}
               placeholder={"Search"}
             />
             <button className={"text-gray-400 rounded-md"}>

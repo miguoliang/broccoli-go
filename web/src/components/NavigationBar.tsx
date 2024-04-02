@@ -10,7 +10,7 @@ export default function NavigationBar() {
   return (
     <nav>
       <ul className={"flex space-x-2 items-stretch justify-center"}>
-        <li className={"mr-5"}>
+        <li className={"mr-5 flex-grow"}>
           <SearchBox />
         </li>
         <li className={"flex items-center"}>

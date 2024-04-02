@@ -49,12 +49,14 @@ export default function App() {
       <BrowserRouter basename={"/"}>
         <header
           className={
-            "h-16 w-full grid grid-cols-3 p-2 border-b shadow items-center"
+            "w-full border-b shadow"
           }
         >
-          <h1 className={"font-bold"}>Broccoli</h1>
-          <NavigationBar />
-          <UserActions />
+          <div className={"h-16 p-2 grid grid-cols-3 max-w-7xl items-center mx-auto"}>
+            <h1 className={"font-bold"}>Broccoli</h1>
+            <NavigationBar />
+            <UserActions />
+          </div>
         </header>
         <main className={"p-5"}>
           <Routes>
