@@ -15,20 +15,23 @@ const queryParams = new URLSearchParams(window.location.search);
 const code = queryParams.get("code");
 const state = queryParams.get("state");
 if (code && state) {
-  console.log("Code:", code);
-  console.log("State:", state);
   userManager
     .signinCallback()
     .then((user) => {
-      console.log("User:", user);
       if (user instanceof User) {
-        console.log("User signed in");
         useAuthStore.setState({ user });
+        window.history.replaceState({}, document.title, "/");
       }
     })
     .catch((error) => {
       console.error("Error signing in", error);
     });
+} else if (useAuthStore.getState().user === null) {
+  userManager.getUser().then((user) => {
+    if (user instanceof User) {
+      useAuthStore.setState({ user });
+    }
+  });
 }
 
 const UserActions = () => {

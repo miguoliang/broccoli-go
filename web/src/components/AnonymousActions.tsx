@@ -24,7 +24,9 @@ export default function AnonymousActions() {
         </button>
       </li>
       <li>
-        <a href={signUpUrl} className={"p-2 rounded-md bg-blue-500 text-white"}>
+        <a href={signUpUrl}
+           className={"inline-block p-2 rounded-md bg-blue-500 text-white"}
+        >
           Register
         </a>
       </li>

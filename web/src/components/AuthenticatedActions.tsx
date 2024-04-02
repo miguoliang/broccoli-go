@@ -7,7 +7,7 @@ export default function AuthenticatedActions({ user }: { user: User }) {
       <li>
         <a
           href={"/profile"}
-          className={"p-2 rounded-md bg-blue-500 text-white"}
+          className={"inline-block p-2 rounded-md bg-blue-500 text-white"}
         >
           {user?.profile.email}
         </a>
@@ -15,7 +15,7 @@ export default function AuthenticatedActions({ user }: { user: User }) {
       <li>
         <a
           href={signOutUrl}
-          className={"p-2 rounded-md bg-blue-500 text-white"}
+          className={"inline-block p-2 rounded-md bg-blue-500 text-white"}
         >
           Logout
         </a>
