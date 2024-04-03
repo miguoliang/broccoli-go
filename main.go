@@ -8,10 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/resource"
 	"github.com/miguoliang/broccoli-go/webhook"
+	"github.com/stripe/stripe-go/v76"
 	"os"
 )
 
 var ginLambda *ginadapter.GinLambda
+
+func init() {
+	stripe.Key = "sk_test_51MtUANAZeDyeb7mKt6yl1sljMOxWwg7Evyp3Pz7PMqlkxgekFvhe01Fm8ubPDukZpKVskIQRgnllmSa4mRHmB3HY00hK1AVsRr"
+}
 
 func main() {
 
