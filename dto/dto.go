@@ -55,3 +55,7 @@ type CreateVertexPropertyRequest struct {
 type CreateVertexPropertyResponse struct {
 	ID uint `json:"id"`
 }
+
+type GetPaymentLinkRequest struct {
+	URL string `json:"url"`
+}

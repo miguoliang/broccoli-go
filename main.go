@@ -68,6 +68,9 @@ func setupRouter() *gin.Engine {
 		POST("", resource.CreateEdgeHandler).
 		GET("", resource.SearchEdgesHandler)
 
+	api.Group("/p").
+		GET("/link", resource.GetPaymentLinkHandler)
+
 	ginLambda = ginadapter.New(r)
 
 	return r

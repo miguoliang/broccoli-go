@@ -8,6 +8,7 @@ import AnonymousActions from "./components/AnonymousActions.tsx";
 import userManager, { useAuthStore } from "./oidc.ts";
 import { User } from "oidc-client-ts";
 import AuthenticatedActions from "./components/AuthenticatedActions.tsx";
+import Profile from "./Profile.tsx";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<SearchVerticesView />} />
             <Route path="/create-vertex" element={<NewVertexForm />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
       </BrowserRouter>
