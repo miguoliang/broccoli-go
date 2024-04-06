@@ -1,15 +1,5 @@
 package persistence
 
-import (
-	"time"
-)
-
-type Model struct {
-	ID        uint      `json:"id" gorm:"primarykey"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
 type Vertex struct {
 	Model
 	Name       string           `json:"name" gorm:"uniqueIndex:vertex_name_type_idx"`

@@ -2,13 +2,18 @@ package resource
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/miguoliang/broccoli-go/common"
+	"github.com/miguoliang/broccoli-go/dto"
 	"github.com/stripe/stripe-go/v76"
 )
 
-func ListSubscriptions(c *gin.Context) {
+func ListSubscriptionsHandler(c *gin.Context) {
 
-	// TODO: Fetch the subscriptions from stripe
+	userID, err := common.GetUserInfoByContext(c)
+	if err != nil {
+		c.JSON(400, dto.ErrorResponse{Error: err.Error()})
+		return
+	}
+
 	params := &stripe.SubscriptionListParams{}
-	params.Limit = stripe.Int64(5)
-	params.Status = stripe.String("all")
 }
