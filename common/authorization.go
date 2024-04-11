@@ -9,11 +9,9 @@ import (
 )
 
 type UserInfo struct {
-	UserId    string `json:"sub"`
-	UserName  string `json:"name"`
-	Email     string `json:"email"`
-	FirstName string `json:"given_name"`
-	LastName  string `json:"family_name"`
+	UserId   string `json:"sub"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 func GetUserInfoByContext(c *gin.Context, userInfo *UserInfo) error {
@@ -56,10 +54,8 @@ func GetUserInfoByJwtToken(jwtToken string, userInfo *UserInfo) error {
 	}
 
 	userInfo.UserId = userData["sub"].(string)
-	userInfo.UserName = userData["name"].(string)
+	userInfo.Username = userData["cognito:username"].(string)
 	userInfo.Email = userData["email"].(string)
-	userInfo.FirstName = userData["given_name"].(string)
-	userInfo.LastName = userData["family_name"].(string)
 
 	return nil
 }

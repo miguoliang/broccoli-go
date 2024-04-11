@@ -5,13 +5,17 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/dto"
+	"github.com/spf13/viper"
 	"github.com/stripe/stripe-go/v76"
 	stripeWebhook "github.com/stripe/stripe-go/v76/webhook"
 )
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
-// const endpointSecret = "whsec_x3beJhuHM4C6G4SvVQSMgnv9tIQZ31lH"
-const endpointSecret = "whsec_9cc7537a2aadc5c017ca45fcb8e0300a45aeeecbba031cf34cc43e05454bfdfb"
+var endpointSecret string
+
+func init() {
+	endpointSecret = viper.GetString("stripe.endpointSecret")
+}
 
 func StripeWebhookHandler(c *gin.Context) {
 
@@ -58,11 +62,8 @@ func handleSubscriptionCreated(event stripe.Event) error {
 	if err != nil {
 		return err
 	}
-	userID, exists := subscription.Metadata["user_id"]
-	if !exists {
-		fmt.Printf("⚠️  Subscription does not have user_id metadata.")
-	}
-
-	fmt.Printf("Subscription created for user: %s.\n", userID)
+	stripeCustomerId := subscription.Customer.ID
+	stripeSubscriptionId := subscription.ID
+	fmt.Printf("🔔  Customer %s subscribed to plan %s.\n", stripeCustomerId, stripeSubscriptionId)
 	return nil
 }

@@ -8,17 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/resource"
 	"github.com/miguoliang/broccoli-go/webhook"
+	"github.com/spf13/viper"
 	"github.com/stripe/stripe-go/v76"
 	"os"
 )
 
 var ginLambda *ginadapter.GinLambda
 
-func init() {
-	stripe.Key = "sk_test_51MtUANAZeDyeb7mKt6yl1sljMOxWwg7Evyp3Pz7PMqlkxgekFvhe01Fm8ubPDukZpKVskIQRgnllmSa4mRHmB3HY00hK1AVsRr"
-}
-
 func main() {
+
+	println(viper.GetString("gin.word"))
 
 	// Set up the router
 	r := setupRouter()
@@ -33,6 +32,22 @@ func main() {
 			panic(err)
 		}
 	}
+}
+
+func init() {
+
+	// Set configuration file paths based on Gin mode
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".") // Look for configuration files in the current directory
+
+	viper.AutomaticEnv() // Enable automatic environment variable parsing
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic("No configuration file loaded - using defaults")
+	}
+
+	stripe.Key = viper.GetString("stripe.secret_key")
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -70,6 +85,9 @@ func setupRouter() *gin.Engine {
 
 	api.Group("/p").
 		GET("/link", resource.GetPaymentLinkHandler)
+
+	api.Group("/profile").
+		GET("/subscriptions", resource.ListSubscriptionsHandler)
 
 	ginLambda = ginadapter.New(r)
 
