@@ -6,18 +6,25 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
+	"github.com/miguoliang/broccoli-go/common"
 	"github.com/miguoliang/broccoli-go/resource"
 	"github.com/miguoliang/broccoli-go/webhook"
-	"github.com/spf13/viper"
 	"github.com/stripe/stripe-go/v76"
 	"os"
 )
 
 var ginLambda *ginadapter.GinLambda
 
+func init() {
+	stripe.Key = common.GetEnv("STRIPE_SECRET_KEY", "")
+	if stripe.Key == "" {
+		panic("No STRIPE_SECRET_KEY found in environment variables")
+	}
+}
+
 func main() {
 
-	println(viper.GetString("gin.word"))
+	gin.SetMode(gin.DebugMode)
 
 	// Set up the router
 	r := setupRouter()
@@ -32,22 +39,6 @@ func main() {
 			panic(err)
 		}
 	}
-}
-
-func init() {
-
-	// Set configuration file paths based on Gin mode
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".") // Look for configuration files in the current directory
-
-	viper.AutomaticEnv() // Enable automatic environment variable parsing
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic("No configuration file loaded - using defaults")
-	}
-
-	stripe.Key = viper.GetString("stripe.secret_key")
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

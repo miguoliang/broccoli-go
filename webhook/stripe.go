@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/miguoliang/broccoli-go/common"
 	"github.com/miguoliang/broccoli-go/dto"
-	"github.com/spf13/viper"
 	"github.com/stripe/stripe-go/v76"
 	stripeWebhook "github.com/stripe/stripe-go/v76/webhook"
 )
@@ -14,7 +14,10 @@ import (
 var endpointSecret string
 
 func init() {
-	endpointSecret = viper.GetString("stripe.endpointSecret")
+	endpointSecret = common.GetEnv("STRIPE_WEBHOOK_SECRET", "")
+	if endpointSecret == "" {
+		panic("STRIPE_WEBHOOK_SECRET is required")
+	}
 }
 
 func StripeWebhookHandler(c *gin.Context) {

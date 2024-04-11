@@ -1,9 +1,6 @@
 package resource
 
 import (
-	"context"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/common"
 	"github.com/miguoliang/broccoli-go/dto"
@@ -11,6 +8,17 @@ import (
 	"github.com/stripe/stripe-go/v76/subscription"
 )
 
+// ListSubscriptionsHandler list subscriptions
+// @Summary List subscriptions
+// @Description List subscriptions
+// @Tags profile
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} []dto.Subscription
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /profile/subscriptions [get]
 func ListSubscriptionsHandler(c *gin.Context) {
 
 	var userInfo common.UserInfo
@@ -20,40 +28,21 @@ func ListSubscriptionsHandler(c *gin.Context) {
 		return
 	}
 
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		c.JSON(500, dto.ErrorResponse{Error: err.Error()})
-		return
+	params := stripe.SubscriptionSearchParams{
+		SearchParams: stripe.SearchParams{
+			Query: "status:'active' AND metadata['email']:'" + userInfo.Email + "'",
+		},
+	}
+	result := subscription.Search(&params)
+	subs := make([]dto.Subscription, 0)
+	for result.Next() {
+		sub := result.Subscription()
+		subs = append(subs, dto.Subscription{
+			ID:            sub.ID,
+			Interval:      string(sub.Items.Data[0].Plan.Interval),
+			IntervalCount: int(sub.Items.Data[0].Plan.IntervalCount),
+		})
 	}
 
-	userPoolId := userPoolId
-	provider := cognitoidentityprovider.NewFromConfig(cfg)
-	user, err := provider.AdminGetUser(context.TODO(), &cognitoidentityprovider.AdminGetUserInput{
-		UserPoolId: &userPoolId,
-		Username:   &userInfo.Username,
-	})
-	if err != nil {
-		c.JSON(500, dto.ErrorResponse{Error: err.Error()})
-		return
-	}
-
-	var stripeCustomerId string
-	for _, attr := range user.UserAttributes {
-		if *attr.Name == "custom:stripeCustomerId" {
-			stripeCustomerId = *attr.Value
-			break
-		}
-	}
-
-	if stripeCustomerId == "" {
-		c.JSON(400, dto.ErrorResponse{Error: "No stripe customer id"})
-		return
-	}
-
-	params := stripe.SubscriptionListParams{
-		Customer: stripe.String(stripeCustomerId),
-		Status:   stripe.String("all"),
-	}
-	result := subscription.List(&params)
-	c.JSON(200, result.SubscriptionList())
+	c.JSON(200, subs)
 }

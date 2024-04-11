@@ -8,10 +8,25 @@ import (
 	"github.com/aws/aws-cdk-go/awscdklambdagoalpha/v2"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
+	"github.com/spf13/viper"
 )
 
 type CdkStackProps struct {
 	awscdk.StackProps
+}
+
+func init() {
+
+	// Set configuration file paths based on Gin mode
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".") // Look for configuration files in the current directory
+
+	viper.AutomaticEnv() // Enable automatic environment variable parsing
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic("No configuration file loaded - using defaults")
+	}
 }
 
 func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) awscdk.Stack {
@@ -34,6 +49,9 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 			Email: &awscognito.StandardAttribute{
 				Required: jsii.Bool(true),
 			},
+		},
+		CustomAttributes: &map[string]awscognito.ICustomAttribute{
+			"stripe_customer_id": awscognito.NewStringAttribute(&awscognito.StringAttributeProps{}),
 		},
 	})
 
@@ -69,9 +87,12 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 
 	function := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("broccoli-go"),
 		&awscdklambdagoalpha.GoFunctionProps{
-			Runtime:     awslambda.Runtime_PROVIDED_AL2023(),
-			Environment: nil,
-			Entry:       jsii.String("../"),
+			Runtime: awslambda.Runtime_PROVIDED_AL2023(),
+			Environment: &map[string]*string{
+				"STRIPE_SECRET_KEY":     jsii.String(viper.GetString("stripe.secret_key")),
+				"STRIPE_WEBHOOK_SECRET": jsii.String(viper.GetString("stripe.webhook_secret")),
+			},
+			Entry: jsii.String("../"),
 		})
 
 	app := awsapigateway.NewRestApi(stack, jsii.String("broccoli-go-api"), nil)
