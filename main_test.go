@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	"github.com/miguoliang/broccoli-go/dto"
 	"github.com/miguoliang/broccoli-go/persistence"
@@ -11,7 +12,13 @@ import (
 	"testing"
 )
 
+func setupTest() {
+	gin.SetMode(gin.TestMode)
+}
+
 func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -24,11 +31,16 @@ func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
 func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
+	setupTest()
+
 	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
+		Properties: map[string]string{
+			"test": "test",
+		},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -50,6 +62,8 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 }
 
 func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -78,6 +92,8 @@ func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 
 func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
+	setupTest()
+
 	r := setupRouter()
 
 	w := httptest.NewRecorder()
@@ -88,6 +104,8 @@ func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 }
 
 func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -118,9 +136,24 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
+
+	var vertex persistence.Vertex
+	err = json.NewDecoder(w.Body).Decode(&vertex)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, response.ID, vertex.ID)
+	assert.Equal(t, t.Name(), vertex.Name)
+	assert.Equal(t, "test", vertex.Type)
+	assert.Equal(t, 1, len(vertex.Properties))
+	assert.Equal(t, "test", vertex.Properties[0].Key)
+	assert.Equal(t, "test", vertex.Properties[0].Value)
 }
 
 func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -139,6 +172,8 @@ func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 }
 
 func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -175,6 +210,8 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
 func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
+	setupTest()
+
 	r := setupRouter()
 
 	w := httptest.NewRecorder()
@@ -185,6 +222,8 @@ func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T)
 }
 
 func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -224,6 +263,8 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 }
 
 func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -290,6 +331,8 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
+	setupTest()
+
 	r := setupRouter()
 
 	w := httptest.NewRecorder()
@@ -300,6 +343,8 @@ func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 }
 
 func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 
@@ -370,6 +415,8 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
+	setupTest()
+
 	r := setupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
@@ -439,6 +486,8 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
+	setupTest()
+
 	r := setupRouter()
 
 	w := httptest.NewRecorder()
@@ -457,6 +506,8 @@ func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 }
 
 func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
+
+	setupTest()
 
 	r := setupRouter()
 

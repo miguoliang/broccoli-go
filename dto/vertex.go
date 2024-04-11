@@ -6,8 +6,9 @@ type SearchVerticesRequest struct {
 }
 
 type CreateVertexRequest struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Name       string            `json:"name"`
+	Type       string            `json:"type"`
+	Properties map[string]string `json:"properties"`
 }
 
 type CreateVertexResponse struct {

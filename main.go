@@ -6,7 +6,6 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
-	"github.com/miguoliang/broccoli-go/common"
 	"github.com/miguoliang/broccoli-go/resource"
 	"github.com/miguoliang/broccoli-go/webhook"
 	"github.com/stripe/stripe-go/v76"
@@ -16,15 +15,10 @@ import (
 var ginLambda *ginadapter.GinLambda
 
 func init() {
-	stripe.Key = common.GetEnv("STRIPE_SECRET_KEY", "")
-	if stripe.Key == "" {
-		panic("No STRIPE_SECRET_KEY found in environment variables")
-	}
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 }
 
 func main() {
-
-	gin.SetMode(gin.DebugMode)
 
 	// Set up the router
 	r := setupRouter()

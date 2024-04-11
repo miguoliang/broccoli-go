@@ -89,6 +89,14 @@ func CreateVertexHandler(c *gin.Context) {
 	var vertex persistence.Vertex
 	vertex.Name = createVertexRequest.Name
 	vertex.Type = createVertexRequest.Type
+	properties := make([]persistence.VertexProperty, 0)
+	for k, v := range createVertexRequest.Properties {
+		properties = append(properties, persistence.VertexProperty{
+			Key:   k,
+			Value: v,
+		})
+	}
+	vertex.Properties = properties
 	db := persistence.GetDatabaseConnection()
 	if result := db.Create(&vertex); result.Error != nil {
 		if strings.Contains(result.Error.Error(), "UNIQUE constraint failed") {
