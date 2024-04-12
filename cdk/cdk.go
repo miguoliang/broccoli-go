@@ -89,10 +89,12 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 		&awscdklambdagoalpha.GoFunctionProps{
 			Runtime: awslambda.Runtime_PROVIDED_AL2023(),
 			Environment: &map[string]*string{
+				"GIN_MODE":              jsii.String(viper.GetString("gin.mode")),
 				"STRIPE_SECRET_KEY":     jsii.String(viper.GetString("stripe.secret_key")),
 				"STRIPE_WEBHOOK_SECRET": jsii.String(viper.GetString("stripe.webhook_secret")),
 			},
-			Entry: jsii.String("../"),
+			Architecture: awslambda.Architecture_ARM_64(),
+			Entry:        jsii.String("../"),
 		})
 
 	app := awsapigateway.NewRestApi(stack, jsii.String("broccoli-go-api"), nil)

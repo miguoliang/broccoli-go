@@ -16,6 +16,11 @@ var ginLambda *ginadapter.GinLambda
 
 func init() {
 	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+
+	mode := os.Getenv("GIN_MODE")
+	if mode != "" {
+		gin.SetMode(mode)
+	}
 }
 
 func main() {

@@ -1,3 +1,5 @@
+gin:
+  mode: release
 stripe:
   secret_key: sk_test_51MtUANAZeDyeb7mKt6yl1sljMOxWwg7Evyp3Pz7PMqlkxgekFvhe01Fm8ubPDukZpKVskIQRgnllmSa4mRHmB3HY00hK1AVsRr
   webhook_secret: whsec_x3beJhuHM4C6G4SvVQSMgnv9tIQZ31lH
