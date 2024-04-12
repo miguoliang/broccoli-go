@@ -112,6 +112,9 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
 		Type: "test",
+		Properties: map[string]string{
+			"test": "test",
+		},
 	})
 	if err != nil {
 		t.Fatal(err)
