@@ -1,6 +1,6 @@
 module.exports = {
   broccoli: {
-    input: "../docs/v3/openapi/openapi.yaml",
+    input: "../api/openapi.yaml",
     output: {
       target: "src/api.ts",
       baseUrl: "/api",

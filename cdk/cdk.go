@@ -94,7 +94,7 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 				"STRIPE_WEBHOOK_SECRET": jsii.String(viper.GetString("stripe.webhook_secret")),
 			},
 			Architecture: awslambda.Architecture_ARM_64(),
-			Entry:        jsii.String("../"),
+			Entry:        jsii.String("../cmd"),
 		})
 
 	app := awsapigateway.NewRestApi(stack, jsii.String("broccoli-go-api"), nil)
