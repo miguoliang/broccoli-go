@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/miguoliang/broccoli-go/internal/persistence"
+
 type CreateEdgeRequest struct {
 	From uint   `json:"from"`
 	To   uint   `json:"to"`
@@ -16,3 +18,5 @@ type SearchEdgesRequest struct {
 	Type []string `form:"type" binding:"required"`
 	PageParams
 }
+
+type SearchEdgesResponse PageResponse[persistence.Edge]

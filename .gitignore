@@ -28,5 +28,6 @@ go.work
 /dist/
 /out/
 /docs/
+/api/
 
 broccoli-go

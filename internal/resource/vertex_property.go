@@ -2,8 +2,8 @@ package resource
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguoliang/broccoli-go/dto"
-	"github.com/miguoliang/broccoli-go/persistence"
+	"github.com/miguoliang/broccoli-go/internal/dto"
+	"github.com/miguoliang/broccoli-go/internal/persistence"
 )
 
 // CreateVertexPropertyHandler

@@ -2,8 +2,8 @@ package resource
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguoliang/broccoli-go/dto"
-	"github.com/miguoliang/broccoli-go/persistence"
+	"github.com/miguoliang/broccoli-go/internal/dto"
+	"github.com/miguoliang/broccoli-go/internal/persistence"
 	"strings"
 )
 
@@ -50,7 +50,7 @@ func CreateEdgeHandler(c *gin.Context) {
 // @Param to query string false "To"
 // @Param page query int false "Page"
 // @Param size query int false "Size"
-// @Success 200 {object} dto.PageResponse[persistence.Edge]
+// @Success 200 {object} dto.SearchEdgesResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /edge [get]
@@ -86,7 +86,7 @@ func SearchEdgesHandler(c *gin.Context) {
 		c.JSON(500, dto.ErrorResponse{Error: result.Error.Error()})
 		return
 	}
-	c.JSON(200, dto.PageResponse[persistence.Edge]{
+	c.JSON(200, dto.SearchEdgesResponse{
 		Total: total,
 		Page:  searchEdgesRequest.Page,
 		Size:  searchEdgesRequest.Size,

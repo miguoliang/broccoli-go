@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/miguoliang/broccoli-go/dto"
+	"github.com/miguoliang/broccoli-go/internal/dto"
 	"github.com/stripe/stripe-go/v76"
 	stripeWebhook "github.com/stripe/stripe-go/v76/webhook"
 	"os"

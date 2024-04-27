@@ -2,8 +2,8 @@ package resource
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguoliang/broccoli-go/common"
-	"github.com/miguoliang/broccoli-go/dto"
+	"github.com/miguoliang/broccoli-go/internal/common"
+	"github.com/miguoliang/broccoli-go/internal/dto"
 	"github.com/stripe/stripe-go/v76"
 	"github.com/stripe/stripe-go/v76/subscription"
 )

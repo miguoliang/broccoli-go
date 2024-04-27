@@ -2,8 +2,8 @@ package resource
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/miguoliang/broccoli-go/dto"
-	"github.com/miguoliang/broccoli-go/persistence"
+	"github.com/miguoliang/broccoli-go/internal/dto"
+	"github.com/miguoliang/broccoli-go/internal/persistence"
 	"strings"
 )
 
@@ -35,7 +35,7 @@ func FindVertexByIdHandler(c *gin.Context) {
 // @Param q query string true "Search query"
 // @Param page query int false "Page number"
 // @Param size query int false "Page size"
-// @Success 200 {object} dto.PageResponse[persistence.Vertex]
+// @Success 200 {object} dto.SearchVerticesResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /vertex [get]
 func SearchVerticesHandler(c *gin.Context) {
@@ -60,7 +60,7 @@ func SearchVerticesHandler(c *gin.Context) {
 		c.JSON(500, dto.ErrorResponse{Error: result.Error.Error()})
 		return
 	}
-	c.JSON(200, dto.PageResponse[persistence.Vertex]{
+	c.JSON(200, dto.SearchVerticesResponse{
 		Total: total,
 		Page:  searchVerticesRequest.Page,
 		Size:  searchVerticesRequest.Size,

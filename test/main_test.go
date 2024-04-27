@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	"bytes"
@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
-	"github.com/miguoliang/broccoli-go/dto"
-	"github.com/miguoliang/broccoli-go/persistence"
+	"github.com/miguoliang/broccoli-go/internal/dto"
+	"github.com/miguoliang/broccoli-go/internal/persistence"
+	"github.com/miguoliang/broccoli-go/internal/resource"
 	"net/http/httptest"
 	"testing"
 )
@@ -20,7 +21,7 @@ func TestCreateVertexHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("POST", "/api/vertex", nil)
@@ -33,7 +34,7 @@ func TestCreateVertexHandler_ShouldCreateVertex(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -65,7 +66,7 @@ func TestCreateVertexHandler_ShouldConflictWhenVertexExists(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -94,7 +95,7 @@ func TestFindVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/vertex/0", nil)
@@ -107,7 +108,7 @@ func TestFindVertexByIdHandler_ShouldReturnVertex(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -158,7 +159,7 @@ func TestSearchVerticesHandler_ShouldReturnEmptyListWhenNoVertex(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/vertex?q=empty", nil)
@@ -178,7 +179,7 @@ func TestSearchVerticesHandler_ShouldReturnVertices(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -215,7 +216,7 @@ func TestDeleteVertexByIdHandler_ShouldNotFoundWhenVertexNotExists(t *testing.T)
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("DELETE", "/api/vertex/0", nil)
@@ -228,7 +229,7 @@ func TestDeleteVertexByIdHandler_ShouldDeleteVertex(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -269,7 +270,7 @@ func TestCreateVertexProperty_ShouldSuccess(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -336,7 +337,7 @@ func TestCreateEdgeHandler_ShouldBadRequestWhenNoPayload(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("POST", "/api/edge", nil)
@@ -349,7 +350,7 @@ func TestCreateEdgeHandler_ShouldCreateEdge(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -420,7 +421,7 @@ func TestCreateEdgeHandler_ShouldConflictWhenEdgeExists(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
@@ -491,7 +492,7 @@ func TestSearchEdgesHandler_ShouldReturnEmptyListWhenNoEdge(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "/api/edge?from=0&to=0&type=0", nil)
@@ -512,7 +513,7 @@ func TestSearchEdgesHandler_ShouldReturnEdges(t *testing.T) {
 
 	setupTest()
 
-	r := setupRouter()
+	r := resource.SetupRouter()
 
 	jsonData, err := json.Marshal(dto.CreateVertexRequest{
 		Name: t.Name(),
