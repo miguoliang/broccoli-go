@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import NewVertexForm from "./NewVertexForm.tsx";
-import SearchVerticesView from "./SearchVerticesView.tsx";
+import VertexForm from "./VertexForm.tsx";
+import VertexListView from "./VertexTableView.tsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar.tsx";
 import AnonymousActions from "./components/AnonymousActions.tsx";
@@ -29,7 +29,7 @@ if (code && state) {
     });
 } else if (useAuthStore.getState().user === null) {
   userManager.getUser().then((user) => {
-    if (user instanceof User) {
+    if (user instanceof User && !user.expired) {
       useAuthStore.setState({ user });
     }
   });
@@ -61,8 +61,8 @@ export default function App() {
         </header>
         <main className={"p-5"}>
           <Routes>
-            <Route path="/" element={<SearchVerticesView />} />
-            <Route path="/create-vertex" element={<NewVertexForm />} />
+            <Route path="/" element={<VertexListView />} />
+            <Route path="/create-vertex" element={<VertexForm />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>

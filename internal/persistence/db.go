@@ -37,6 +37,10 @@ func autoMigrate(db *gorm.DB) {
 	if err != nil {
 		panic(err)
 	}
+	err = db.AutoMigrate(&Usage{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func init() {

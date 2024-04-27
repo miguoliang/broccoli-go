@@ -1,6 +1,6 @@
 import { SearchVerticesParams, useSearchVertices } from "./api.ts";
 
-const SearchVerticesView = ({
+const VertexListView = ({
   q = "",
   page = 0,
   size = 10,
@@ -13,4 +13,4 @@ const SearchVerticesView = ({
   );
 };
 
-export default SearchVerticesView;
+export default VertexListView;

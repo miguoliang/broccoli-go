@@ -8,10 +8,6 @@ type CreateEdgeRequest struct {
 	Type string `json:"type" binding:"required"`
 }
 
-type CreateEdgeResponse struct {
-	ID uint `json:"id"`
-}
-
 type SearchEdgesRequest struct {
 	From []uint   `form:"from" binding:"required"`
 	To   []uint   `form:"to" binding:"required"`

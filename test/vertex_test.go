@@ -30,7 +30,7 @@ func (s *VertexTestSuite) TestCreateVertexSucceed() {
 	})
 	s.Equal(201, w.Code)
 
-	var response dto.CreateVertexResponse
+	var response dto.CreatedResponse
 	err := json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 	s.NotEqual("", response.ID)
@@ -67,7 +67,7 @@ func (s *VertexTestSuite) TestFindVertexByIdSucceed() {
 	})
 	s.Equal(201, w.Code)
 
-	var response dto.CreateVertexResponse
+	var response dto.CreatedResponse
 	err := json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 
@@ -126,7 +126,7 @@ func (s *VertexTestSuite) TestDeleteVertexByIdSucceed() {
 		Type: "test",
 	})
 	s.Equal(201, w.Code)
-	var response dto.CreateVertexResponse
+	var response dto.CreatedResponse
 	err := json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 
@@ -145,7 +145,7 @@ func (s *VertexTestSuite) TestCreateVertexPropertySucceed() {
 	})
 	s.Equal(201, w.Code)
 
-	var response dto.CreateVertexResponse
+	var response dto.CreatedResponse
 	err := json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 

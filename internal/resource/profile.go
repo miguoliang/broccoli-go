@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/internal/common"
 	"github.com/miguoliang/broccoli-go/internal/dto"
+	"github.com/miguoliang/broccoli-go/internal/persistence"
 	"github.com/stripe/stripe-go/v76"
 	"github.com/stripe/stripe-go/v76/subscription"
 )
@@ -45,4 +46,36 @@ func ListSubscriptionsHandler(c *gin.Context) {
 	}
 
 	c.JSON(200, subs)
+}
+
+// GetUsageHandler get usage
+// @Summary Get usage
+// @Description Get usage
+// @Tags profile
+// @Accept json
+// @Produce json
+// @Param start_date query string true "Start date"
+// @Param end_date query string true "End date"
+// @Success 200 {object} []persistence.Usage
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /profile/usages [get]
+func GetUsageHandler(c *gin.Context) {
+
+	var request dto.GetUsageRequest
+	if err := c.ShouldBindQuery(&request); err != nil {
+		c.JSON(400, dto.ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	var usages []persistence.Usage
+	db := persistence.GetDatabaseConnection()
+	if result := db.Find(&usages).
+		Where("`date` > ?", request.StartDate).
+		Where("`date` < ?", request.EndDate); result.Error != nil {
+		c.JSON(500, dto.ErrorResponse{Error: result.Error.Error()})
+		return
+	}
+
+	c.JSON(200, usages)
 }

@@ -25,7 +25,7 @@ func (s *EdgeTestSuite) TestCreateEdgeSucceed() {
 	})
 	s.Equal(201, w.Code)
 
-	var from dto.CreateVertexResponse
+	var from dto.CreatedResponse
 	err := json.NewDecoder(w.Body).Decode(&from)
 	s.Nil(err)
 
@@ -35,7 +35,7 @@ func (s *EdgeTestSuite) TestCreateEdgeSucceed() {
 	})
 	s.Equal(201, w.Code)
 
-	var to dto.CreateVertexResponse
+	var to dto.CreatedResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	s.Nil(err)
 
@@ -46,7 +46,7 @@ func (s *EdgeTestSuite) TestCreateEdgeSucceed() {
 	})
 	s.Equal(201, w.Code)
 
-	var response dto.CreateEdgeResponse
+	var response dto.CreatedResponse
 	err = json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 	s.NotEmpty(response.ID)
@@ -60,7 +60,7 @@ func (s *EdgeTestSuite) TestCreateEdgeConflict() {
 	})
 	s.Equal(201, w.Code)
 
-	var from dto.CreateVertexResponse
+	var from dto.CreatedResponse
 	err := json.NewDecoder(w.Body).Decode(&from)
 	s.Nil(err)
 
@@ -70,7 +70,7 @@ func (s *EdgeTestSuite) TestCreateEdgeConflict() {
 	})
 	s.Equal(201, w.Code)
 
-	var to dto.CreateVertexResponse
+	var to dto.CreatedResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	s.Nil(err)
 
@@ -108,7 +108,7 @@ func (s *EdgeTestSuite) TestSearchEdgesNotEmpty() {
 	})
 	s.Equal(201, w.Code)
 
-	var from dto.CreateVertexResponse
+	var from dto.CreatedResponse
 	err := json.NewDecoder(w.Body).Decode(&from)
 	s.Nil(err)
 
@@ -118,7 +118,7 @@ func (s *EdgeTestSuite) TestSearchEdgesNotEmpty() {
 	})
 	s.Equal(201, w.Code)
 
-	var to dto.CreateVertexResponse
+	var to dto.CreatedResponse
 	err = json.NewDecoder(w.Body).Decode(&to)
 	s.Nil(err)
 

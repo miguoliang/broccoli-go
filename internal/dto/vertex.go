@@ -13,8 +13,4 @@ type CreateVertexRequest struct {
 	Properties map[string]string `json:"properties"`
 }
 
-type CreateVertexResponse struct {
-	ID uint `json:"id"`
-}
-
 type SearchVerticesResponse PageResponse[persistence.Vertex]

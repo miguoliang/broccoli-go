@@ -8,7 +8,7 @@ const CreateVertexSchema = object({
   name: string().required("Name is required"),
 });
 
-const NewVertexForm = () => {
+const VertexForm = () => {
   const mutation = useCreateVertex();
 
   return (
@@ -58,4 +58,4 @@ const NewVertexForm = () => {
   );
 };
 
-export default NewVertexForm;
+export default VertexForm;

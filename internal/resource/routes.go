@@ -29,6 +29,7 @@ func SetupRouter() *gin.Engine {
 		GET("/link", GetPaymentLinkHandler)
 
 	api.Group("/profile").
+		GET("/usage", GetUsageHandler).
 		GET("/subscriptions", ListSubscriptionsHandler)
 
 	return r

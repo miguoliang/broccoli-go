@@ -4,6 +4,10 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
+type CreatedResponse struct {
+	ID uint `json:"id"`
+}
+
 type PageParams struct {
 	Page int `form:"page"`
 	Size int `form:"size"`

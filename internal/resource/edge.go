@@ -37,7 +37,7 @@ func CreateEdgeHandler(c *gin.Context) {
 		c.JSON(500, dto.ErrorResponse{Error: result.Error.Error()})
 		return
 	}
-	c.JSON(201, dto.CreateEdgeResponse{ID: edge.ID})
+	c.JSON(201, dto.CreatedResponse{ID: edge.ID})
 }
 
 // SearchEdgesHandler

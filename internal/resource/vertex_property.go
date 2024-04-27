@@ -39,5 +39,5 @@ func CreateVertexPropertyHandler(c *gin.Context) {
 		c.JSON(500, dto.ErrorResponse{Error: result.Error.Error()})
 		return
 	}
-	c.JSON(201, dto.CreateVertexPropertyResponse{ID: vertexProperty.ID})
+	c.JSON(201, dto.CreatedResponse{ID: vertexProperty.ID})
 }
