@@ -7,7 +7,7 @@ require (
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/glebarez/sqlite v1.11.0
-	github.com/go-playground/assert/v2 v2.2.0
+	github.com/stretchr/testify v1.9.0
 	github.com/stripe/stripe-go/v76 v76.23.0
 	gorm.io/gorm v1.25.9
 )

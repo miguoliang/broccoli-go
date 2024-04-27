@@ -120,6 +120,15 @@ func CreateVertexHandler(c *gin.Context) {
 // @Router /vertex/{id} [delete]
 func DeleteVertexByIdHandler(c *gin.Context) {
 	id := c.Param("id")
+
+	// Check if vertex exists
+	var vertex persistence.Vertex
+	if result := persistence.GetDatabaseConnection().First(&vertex, id); result.Error != nil {
+		c.JSON(404, dto.ErrorResponse{Error: "vertex not found"})
+		return
+	}
+
+	// Delete vertex
 	db := persistence.GetDatabaseConnection()
 	if result := db.Delete(&persistence.Vertex{}, id); result.Error != nil {
 		c.JSON(500, dto.ErrorResponse{Error: result.Error.Error()})
