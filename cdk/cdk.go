@@ -8,25 +8,11 @@ import (
 	"github.com/aws/aws-cdk-go/awscdklambdagoalpha/v2"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/spf13/viper"
+	"os"
 )
 
 type CdkStackProps struct {
 	awscdk.StackProps
-}
-
-func init() {
-
-	// Set configuration file paths based on Gin mode
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".") // Look for configuration files in the current directory
-
-	viper.AutomaticEnv() // Enable automatic environment variable parsing
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic("No configuration file loaded - using defaults")
-	}
 }
 
 func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) awscdk.Stack {
@@ -89,9 +75,9 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 		&awscdklambdagoalpha.GoFunctionProps{
 			Runtime: awslambda.Runtime_PROVIDED_AL2023(),
 			Environment: &map[string]*string{
-				"GIN_MODE":              jsii.String(viper.GetString("gin.mode")),
-				"STRIPE_SECRET_KEY":     jsii.String(viper.GetString("stripe.secret_key")),
-				"STRIPE_WEBHOOK_SECRET": jsii.String(viper.GetString("stripe.webhook_secret")),
+				"GIN_MODE":              jsii.String(os.Getenv("GIN_MODE")),
+				"STRIPE_SECRET_KEY":     jsii.String(os.Getenv("STRIPE_SECRET_KEY")),
+				"STRIPE_WEBHOOK_SECRET": jsii.String(os.Getenv("STRIPE_WEBHOOK_SECRET")),
 			},
 			Architecture: awslambda.Architecture_ARM_64(),
 			Entry:        jsii.String("../cmd"),
