@@ -1,21 +1,22 @@
 version: '2.1'
 orbs:
   aws-cli: circleci/aws-cli@4.1.2
+  cdk: myhelix/cdk@1.5.5
+  go: circleci/go@1.7.3
 jobs:
-  build:
-    machine:
-      image: ubuntu-2204:2023.10.1
-      docker_layer_caching: true
-    resource_class: arm.medium
+  build_and_test: # this can be any name you choose
+    executor:
+      name: go/default # Use the default executor from the orb
+      tag: '1.19.2' # Specify a version tag
     steps:
-      - checkout
-      - aws-cli/assume_role_with_web_identity:
-          region: us-east-1
-          role_arn: arn:aws:iam::072340891755:role/CircleCIWorkflow
-      - aws-cli/setup:
-          region: us-east-1
-          profile_name: default
-      - run:
-          name: CDK Deploy
-          command: cd cdk && cdk deploy
-          
+      - checkout # checkout source code
+      - go/load-cache # Load cached Go modules.
+      - go/mod-download # Run 'go mod download'.
+      - go/save-cache # Save Go modules to cache.
+      - go/test: # Runs 'go test ./...' but includes extensive parameterization for finer tuning.
+          covermode: atomic
+          failfast: true
+          race: true
+      - persist_to_workspace:
+          root: ~/project
+          paths: .
