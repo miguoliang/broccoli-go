@@ -39,7 +39,6 @@ jobs:
             - govet-report.out
             - test-report.out
             - coverage-report.out
-            - sonar-project.properties
       - run:
           name: check files
           command: pwd && ls -la
@@ -63,7 +62,7 @@ jobs:
           name: deploy
           command: cd cdk && cdk deploy --require-approval never
 workflows:
-  test_and_deploy:
+  test_scan_and_deploy:
     jobs:
       - test
       - scan:
@@ -71,3 +70,6 @@ workflows:
             - sonarcloud
           requires:
             - test
+      - deploy:
+          requires:
+            - scan
