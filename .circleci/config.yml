@@ -9,6 +9,11 @@ jobs:
       - image: cimg/node:22.1.0
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/project/reports
+      - run:
+          name: check files
+          command: pwd && ls -la
       - sonarcloud/scan
   test:
     executor:
@@ -20,17 +25,24 @@ jobs:
       - go/mod-download
       - go/save-cache
       - run:
+          name: create report directory
+          command: mkdir -p ~/project/reports
+      - run:
           name: run go vet
-          command: go vet -json ./... > govet-report.out
+          command: go vet -json ./... > reports/govet-report.out
       - run:
           name: run tests
-          command: go test -coverprofile=coverage-report.out -json ./... > test-report.out
+          command: go test -coverprofile=reports/coverage-report.out -json ./... > reports/test-report.out
       - persist_to_workspace:
-          root: ~/project
+          root: ~/project/reports
           paths:
             - govet-report.out
             - test-report.out
             - coverage-report.out
+            - sonar-project.properties
+      - run:
+          name: check files
+          command: pwd && ls -la
   deploy:
     machine:
       image: ubuntu-2204:2023.10.1
