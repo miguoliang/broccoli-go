@@ -22,7 +22,7 @@ customAxios.interceptors.request.use(
   },
   (error) => {
     // Handle errors during request creation
-    return Promise.reject(error);
+    return Promise.reject(new Error(`Something went wrong with the request, ${error.message}`));
   },
 );
 
@@ -38,7 +38,7 @@ export const customInstance = <T>(
     cancelToken: source.token,
   }).then(({ data }) => data);
 
-  // @ts-ignore
+  // @ts-expect-error cancel is not defined on Promise
   promise.cancel = () => {
     source.cancel("Query was cancelled");
   };

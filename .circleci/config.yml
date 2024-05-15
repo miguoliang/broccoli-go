@@ -11,11 +11,26 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/project/reports
-      - run:
-          name: check files
-          command: pwd && ls -la
       - sonarcloud/scan
-  test:
+  build-react:
+    docker:
+      - image: cimg/node:22.1.0
+    steps:
+      - checkout
+      - run:
+          name: enter web directory
+          command: cd web
+      - run:
+          name: install dependencies
+          command: npm install
+      - run:
+          name: build
+          command: npm run build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - web/dist
+  test-go:
     executor:
       name: go/default
       tag: 1.22.1
@@ -47,9 +62,6 @@ jobs:
             - govet-report.out
             - test-report.out
             - coverage-report.out
-      - run:
-          name: check files
-          command: pwd && ls -la
   deploy:
     machine:
       image: ubuntu-2204:2023.10.1
@@ -72,14 +84,15 @@ jobs:
 workflows:
   test_scan_and_deploy:
     jobs:
-      - test
+      - test-go
       - scan:
           context:
             - sonarcloud
           requires:
-            - test
+            - test-go
+      - build-react
       - deploy:
           context:
             - aws-cli
           requires:
-            - scan
+            - build-react

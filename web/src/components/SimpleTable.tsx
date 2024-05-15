@@ -1,10 +1,10 @@
 import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 
-interface SimpleTableProps<T = any> {
+interface SimpleTableProps<T = unknown> {
   table: ReactTable<T>;
 }
 
-export default function SimpleTable<T = any>({
+export default function SimpleTable<T = unknown>({
   table,
 }: Readonly<SimpleTableProps<T>>) {
   return (
