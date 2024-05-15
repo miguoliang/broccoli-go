@@ -71,5 +71,7 @@ workflows:
           requires:
             - test
       - deploy:
+          context:
+            - aws-cli
           requires:
             - scan
