@@ -56,5 +56,4 @@ func GetPaymentLinkHandler(c *gin.Context) {
 	c.JSON(201, dto.GetPaymentLinkRequest{
 		URL: result.URL,
 	})
-	return
 }
