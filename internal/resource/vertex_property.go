@@ -13,7 +13,7 @@ import (
 // @Produce json
 // @Param id path int true "Vertex ID"
 // @Param request body dto.CreateVertexPropertyRequest true "Request body"
-// @Success 201 {object} dto.CreateVertexPropertyResponse
+// @Success 201 {object} dto.CreatedResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse

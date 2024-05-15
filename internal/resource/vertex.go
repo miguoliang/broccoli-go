@@ -1,10 +1,11 @@
 package resource
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/internal/dto"
 	"github.com/miguoliang/broccoli-go/internal/persistence"
-	"strings"
 )
 
 // FindVertexByIdHandler
@@ -75,7 +76,7 @@ func SearchVerticesHandler(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param request body dto.CreateVertexRequest true "Create Vertex Request"
-// @Success 201 {object} dto.CreateVertexResponse
+// @Success 201 {object} dto.CreatedResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 409 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
