@@ -28,11 +28,19 @@ jobs:
           name: create report directory
           command: mkdir -p ~/project/reports
       - run:
+          name: install go-junit-report
+          command: go install github.com/jstemmer/go-junit-report/v2@latest
+      - run:
           name: run go vet
           command: go vet -json ./... > reports/govet-report.out
       - run:
           name: run tests
           command: go test -coverprofile=reports/coverage-report.out -json ./... > reports/test-report.out
+      - run:
+          name: convert test output to junit
+          command: go-junit-report < reports/test-report.out > reports/test-report.xml
+      - store_test_results:
+          path: ~/project/reports/test-report.xml
       - persist_to_workspace:
           root: ~/project/reports
           paths:
