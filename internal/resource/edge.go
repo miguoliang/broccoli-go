@@ -1,10 +1,11 @@
 package resource
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/miguoliang/broccoli-go/internal/dto"
 	"github.com/miguoliang/broccoli-go/internal/persistence"
-	"strings"
 )
 
 // CreateEdgeHandler
@@ -13,7 +14,7 @@ import (
 // @ID create-edge
 // @Produce json
 // @Param request body dto.CreateEdgeRequest true "Request body"
-// @Success 201 {object} dto.CreateEdgeResponse
+// @Success 201 {object} dto.CreatedResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 409 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse

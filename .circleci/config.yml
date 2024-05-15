@@ -13,8 +13,9 @@ jobs:
           at: ~/project/reports
       - sonarcloud/scan
   build-react:
-    docker:
-      - image: cimg/node:22.1.0
+    machine:
+      image: ubuntu-2204:2023.10.1
+      docker_layer_caching: true
     steps:
       - checkout
       - run:
