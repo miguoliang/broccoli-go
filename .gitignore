@@ -31,3 +31,5 @@ go.work
 /api/
 
 broccoli-go
+
+__debug_bin*

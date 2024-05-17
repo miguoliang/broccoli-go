@@ -3,11 +3,14 @@ package test
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/miguoliang/broccoli-go/internal/dto"
 	"github.com/miguoliang/broccoli-go/internal/persistence"
 	"github.com/stretchr/testify/suite"
-	"testing"
 )
+
+const ENDPOINT_VERTEX = "/api/vertex"
 
 type VertexTestSuite struct {
 	Suite
@@ -15,13 +18,13 @@ type VertexTestSuite struct {
 
 func (s *VertexTestSuite) TestCreateVertexBadRequest() {
 
-	w := s.Post("/api/vertex", nil)
+	w := s.Post(ENDPOINT_VERTEX, nil)
 	s.Equal(400, w.Code)
 }
 
 func (s *VertexTestSuite) TestCreateVertexSucceed() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name(),
 		Type: "test",
 		Properties: map[string]string{
@@ -43,22 +46,22 @@ func (s *VertexTestSuite) TestCreateVertexConflict() {
 		Type: "test",
 	}
 
-	w := s.Post("/api/vertex", body)
+	w := s.Post(ENDPOINT_VERTEX, body)
 	s.Equal(201, w.Code)
 
-	w = s.Post("/api/vertex", body)
+	w = s.Post(ENDPOINT_VERTEX, body)
 	s.Equal(409, w.Code)
 }
 
 func (s *VertexTestSuite) TestFindVertexByIdNotFound() {
 
-	w := s.Get("/api/vertex/0")
+	w := s.Get(ENDPOINT_VERTEX + "/0")
 	s.Equal(404, w.Code)
 }
 
 func (s *VertexTestSuite) TestFindVertexByIdSucceed() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name(),
 		Type: "test",
 		Properties: map[string]string{
@@ -71,7 +74,7 @@ func (s *VertexTestSuite) TestFindVertexByIdSucceed() {
 	err := json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 
-	w = s.Get(fmt.Sprintf("/api/vertex/%d", response.ID))
+	w = s.Get(fmt.Sprintf("%s/%d", ENDPOINT_VERTEX, response.ID))
 	s.Equal(200, w.Code)
 	var vertex persistence.Vertex
 	err = json.NewDecoder(w.Body).Decode(&vertex)
@@ -97,7 +100,7 @@ func (s *VertexTestSuite) TestSearchVerticesEmpty() {
 
 func (s *VertexTestSuite) TestSearchVerticesNotEmpty() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name(),
 		Type: "test",
 	})
@@ -115,13 +118,13 @@ func (s *VertexTestSuite) TestSearchVerticesNotEmpty() {
 
 func (s *VertexTestSuite) TestDeleteVertexByIdNotFound() {
 
-	w := s.Delete("/api/vertex/0")
+	w := s.Delete(ENDPOINT_VERTEX + "/0")
 	s.Equal(404, w.Code)
 }
 
 func (s *VertexTestSuite) TestDeleteVertexByIdSucceed() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name(),
 		Type: "test",
 	})
@@ -130,16 +133,16 @@ func (s *VertexTestSuite) TestDeleteVertexByIdSucceed() {
 	err := json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 
-	w = s.Delete(fmt.Sprintf("/api/vertex/%d", response.ID))
+	w = s.Delete(fmt.Sprintf("%s/%d", ENDPOINT_VERTEX, response.ID))
 	s.Equal(204, w.Code)
 
-	w = s.Get(fmt.Sprintf("/api/vertex/%d", response.ID))
+	w = s.Get(fmt.Sprintf("%s/%d", ENDPOINT_VERTEX, response.ID))
 	s.Equal(404, w.Code)
 }
 
 func (s *VertexTestSuite) TestCreateVertexPropertySucceed() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name(),
 		Type: "test",
 	})
@@ -149,13 +152,13 @@ func (s *VertexTestSuite) TestCreateVertexPropertySucceed() {
 	err := json.NewDecoder(w.Body).Decode(&response)
 	s.Nil(err)
 
-	w = s.Post(fmt.Sprintf("/api/vertex/%d/property", response.ID), dto.CreateVertexPropertyRequest{
+	w = s.Post(fmt.Sprintf("%s/%d/property", ENDPOINT_VERTEX, response.ID), dto.CreateVertexPropertyRequest{
 		Key:   "test",
 		Value: "test",
 	})
 	s.Equal(201, w.Code)
 
-	w = s.Get(fmt.Sprintf("/api/vertex/%d", response.ID))
+	w = s.Get(fmt.Sprintf("%s/%d", ENDPOINT_VERTEX, response.ID))
 	s.Equal(200, w.Code)
 	var vertex persistence.Vertex
 	err = json.NewDecoder(w.Body).Decode(&vertex)

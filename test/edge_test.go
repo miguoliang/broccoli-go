@@ -2,10 +2,14 @@ package test
 
 import (
 	"encoding/json"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/miguoliang/broccoli-go/internal/dto"
 	"github.com/stretchr/testify/suite"
-	"testing"
 )
+
+const ENDPOINT_EDGE = "/api/edge"
 
 type EdgeTestSuite struct {
 	Suite
@@ -13,33 +17,31 @@ type EdgeTestSuite struct {
 
 func (s *EdgeTestSuite) TestCreateEdgeBadRequest() {
 
-	w := s.Post("/api/edge", nil)
+	w := s.Post(ENDPOINT_EDGE, nil)
 	s.Equal(400, w.Code)
 }
 
 func (s *EdgeTestSuite) TestCreateEdgeSucceed() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name() + "_1",
 		Type: "test",
 	})
 	s.Equal(201, w.Code)
 
-	var from dto.CreatedResponse
-	err := json.NewDecoder(w.Body).Decode(&from)
+	from, err := decodeBody(w)
 	s.Nil(err)
 
-	w = s.Post("/api/vertex", dto.CreateVertexRequest{
+	w = s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name() + "_2",
 		Type: "test",
 	})
 	s.Equal(201, w.Code)
 
-	var to dto.CreatedResponse
-	err = json.NewDecoder(w.Body).Decode(&to)
+	to, err := decodeBody(w)
 	s.Nil(err)
 
-	w = s.Post("/api/edge", dto.CreateEdgeRequest{
+	w = s.Post(ENDPOINT_EDGE, dto.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -52,9 +54,15 @@ func (s *EdgeTestSuite) TestCreateEdgeSucceed() {
 	s.NotEmpty(response.ID)
 }
 
+func decodeBody(w *httptest.ResponseRecorder) (dto.CreatedResponse, error) {
+	var to dto.CreatedResponse
+	err := json.NewDecoder(w.Body).Decode(&to)
+	return to, err
+}
+
 func (s *EdgeTestSuite) TestCreateEdgeConflict() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name() + "_1",
 		Type: "test",
 	})
@@ -64,24 +72,23 @@ func (s *EdgeTestSuite) TestCreateEdgeConflict() {
 	err := json.NewDecoder(w.Body).Decode(&from)
 	s.Nil(err)
 
-	w = s.Post("/api/vertex", dto.CreateVertexRequest{
+	w = s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name() + "_2",
 		Type: "test",
 	})
 	s.Equal(201, w.Code)
 
-	var to dto.CreatedResponse
-	err = json.NewDecoder(w.Body).Decode(&to)
+	to, err := decodeBody(w)
 	s.Nil(err)
 
-	w = s.Post("/api/edge", dto.CreateEdgeRequest{
+	w = s.Post(ENDPOINT_EDGE, dto.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
 	})
 	s.Equal(201, w.Code)
 
-	w = s.Post("/api/edge", dto.CreateEdgeRequest{
+	w = s.Post(ENDPOINT_EDGE, dto.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
@@ -91,7 +98,7 @@ func (s *EdgeTestSuite) TestCreateEdgeConflict() {
 
 func (s *EdgeTestSuite) TestSearchEdgesEmpty() {
 
-	w := s.Get("/api/edge?from=0&to=0&type=test")
+	w := s.Get(ENDPOINT_EDGE + "?from=0&to=0&type=test")
 	s.Equal(200, w.Code)
 
 	var response dto.SearchEdgesResponse
@@ -102,27 +109,25 @@ func (s *EdgeTestSuite) TestSearchEdgesEmpty() {
 
 func (s *EdgeTestSuite) TestSearchEdgesNotEmpty() {
 
-	w := s.Post("/api/vertex", dto.CreateVertexRequest{
+	w := s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name() + "_1",
 		Type: "test",
 	})
 	s.Equal(201, w.Code)
 
-	var from dto.CreatedResponse
-	err := json.NewDecoder(w.Body).Decode(&from)
+	from, err := decodeBody(w)
 	s.Nil(err)
 
-	w = s.Post("/api/vertex", dto.CreateVertexRequest{
+	w = s.Post(ENDPOINT_VERTEX, dto.CreateVertexRequest{
 		Name: s.T().Name() + "_2",
 		Type: "test",
 	})
 	s.Equal(201, w.Code)
 
-	var to dto.CreatedResponse
-	err = json.NewDecoder(w.Body).Decode(&to)
+	to, err := decodeBody(w)
 	s.Nil(err)
 
-	w = s.Post("/api/edge", dto.CreateEdgeRequest{
+	w = s.Post(ENDPOINT_EDGE, dto.CreateEdgeRequest{
 		From: from.ID,
 		To:   to.ID,
 		Type: "test",
