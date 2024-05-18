@@ -14,19 +14,14 @@ export default function AnonymousActions() {
   }, []);
 
   return (
-    <ul className={"flex space-x-2 ml-auto"}>
+    <ul className={"flex space-x-10 ml-auto"}>
       <li>
-        <button
-          className={"p-2 rounded-md bg-blue-500 text-white"}
-          onClick={login}
-        >
+        <button className="border-0 underline underline-offset-8 hover:bg-white hover:no-underline" onClick={login}>
           Login
         </button>
       </li>
       <li>
-        <a href={signUpUrl}
-           className={"inline-block p-2 rounded-md bg-blue-500 text-white"}
-        >
+        <a className="underline underline-offset-8 hover:no-underline" href={signUpUrl}>
           Register
         </a>
       </li>

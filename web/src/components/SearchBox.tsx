@@ -1,4 +1,4 @@
-import { FiSearch } from "react-icons/fi";
+import { Input } from "@headlessui/react";
 import Downshift from "downshift";
 
 export default function SearchBox() {
@@ -36,15 +36,12 @@ export default function SearchBox() {
         isOpen,
       }) => (
         <div>
-          <div className="p-2 border rounded-md flex justify-between">
-            <input
+          <div className="p-1 flex justify-between bg-white">
+            <Input
               {...getInputProps()}
-              className={"border-0 outline-0 flex-grow"}
+              className={"border-0 outline-0 flex-grow text-sm min-w-[200px] px-2 border-r placeholder:text-gray-300"}
               placeholder={"Search"}
             />
-            <button className={"text-gray-400 rounded-md"}>
-              <FiSearch />
-            </button>
           </div>
           <ul
             className={`absolute w-72 bg-white mt-1 border rounded-md shadow-md max-h-80 overflow-auto p-0 z-10 ${
@@ -66,7 +63,7 @@ export default function SearchBox() {
                   )
                   .map((item, index) => (
                     <li
-                      className={`py-2 px-3 shadow-sm flex flex-col ${highlightedIndex === index && "bg-blue-300"} ${selectedItem === item && "font-bold"}`}
+                      className={`py-2 px-3 shadow-sm flex flex-col ${highlightedIndex === index && "bg-blue-300"} ${selectedItem === item && "font-bold"} cursor-pointer`}
                       key={`${item.author}${index}`}
                       {...getItemProps({
                         item,

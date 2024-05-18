@@ -1,7 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import VertexForm from "./VertexForm.tsx";
-import VertexListView from "./VertexTableView.tsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar.tsx";
 import AnonymousActions from "./components/AnonymousActions.tsx";
@@ -9,6 +7,7 @@ import userManager, { useAuthStore } from "./oidc.ts";
 import { User } from "oidc-client-ts";
 import AuthenticatedActions from "./components/AuthenticatedActions.tsx";
 import Profile from "./Profile.tsx";
+import Graph from "./Graph.tsx";
 
 const queryClient = new QueryClient();
 
@@ -46,28 +45,29 @@ const UserActions = () => {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename={"/"}>
-        <header
-          className={
-            "w-full border-b shadow"
-          }
-        >
-          <div className={"h-16 p-2 grid grid-cols-3 max-w-7xl items-center mx-auto"}>
-            <h1 className={"font-bold"}>Broccoli</h1>
-            <NavigationBar />
-            <UserActions />
-          </div>
-        </header>
-        <main className={"p-5"}>
-          <Routes>
-            <Route path="/" element={<VertexListView />} />
-            <Route path="/create-vertex" element={<VertexForm />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </main>
-      </BrowserRouter>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <div className="h-screen flex flex-col">
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter basename={"/"}>
+          <header className={"w-full border-b shadow"}>
+            <div
+              className={
+                "h-16 p-2 grid grid-cols-3 max-w-7xl items-center mx-auto"
+              }
+            >
+              <h1 className={"font-bold"}>Broccoli</h1>
+              <NavigationBar />
+              <UserActions />
+            </div>
+          </header>
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/" element={<Graph />} />
+            </Routes>
+          </main>
+        </BrowserRouter>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </div>
   );
 }
