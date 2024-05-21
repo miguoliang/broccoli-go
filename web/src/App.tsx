@@ -45,9 +45,9 @@ const UserActions = () => {
 
 export default function App() {
   return (
-    <div className="h-screen flex flex-col">
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter basename={"/"}>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter basename={"/"}>
+        <div className="h-screen flex flex-col">
           <header className={"w-full border-b shadow"}>
             <div
               className={
@@ -65,9 +65,9 @@ export default function App() {
               <Route path="/" element={<Graph />} />
             </Routes>
           </main>
-        </BrowserRouter>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </div>
+        </div>
+      </BrowserRouter>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
