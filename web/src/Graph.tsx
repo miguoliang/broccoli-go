@@ -75,7 +75,6 @@ const AddNodeDialog = ({ isOpen, onClose }: Readonly<AddNodeDialogProps>) => {
         {/* Full-screen container to center the panel */}
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
           {/* The actual dialog panel  */}
-
           <TransitionChild
             as={DialogPanel}
             className="max-w-xl space-y-4 bg-white p-12 rounded-md shadow-around"
@@ -98,20 +97,15 @@ const AddNodeDialog = ({ isOpen, onClose }: Readonly<AddNodeDialogProps>) => {
   );
 };
 
-interface AddNodeFormValues {
+type AddNodeFormValues = {
   name: string;
   type: string;
   props: Array<{ key: string; value: string }>;
-}
+};
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   type: Yup.string().required("Type is required"),
-  props: Yup.object().shape({
-    prop1: Yup.string().required("Prop 1 is required"),
-    prop2: Yup.string().required("Prop 2 is required"),
-    // Add more prop validations as needed
-  }),
 });
 
 const initialValues: AddNodeFormValues = {
@@ -132,72 +126,93 @@ const AddNodeForm = () => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ values: { props } }) => (
-        <Form>
-          <div>
-            <label htmlFor="name">Name</label>
-            <Field type="text" id="name" name="name" />
-            <ErrorMessage name="name" component="div" />
-          </div>
-          <div>
-            <label htmlFor="type">Type</label>
-            <Field type="text" id="type" name="type" />
-            <ErrorMessage name="type" component="div" />
-          </div>
-          <FieldArray name="props">
-            {({ push, remove }) => (
-              <div>
-                <h3>Props</h3>
-                {props.map((_, index) => (
-                  <div
-                    key={index}
-                    className="flex gap-1 hover:bg-gray-100 p-1 rounded-sm"
-                  >
-                    <Field
-                      type="text"
-                      id={`props.${index}.key`}
-                      name={`props.${index}.key`}
-                      placeholder="Key"
-                      className="flex-grow-1 appearance-none border-none rounded-sm focus:ring-0 outline-none"
-                    />
-                    <ErrorMessage name={`props.${index}.key`} component="div" />
-                    <Field
-                      type="text"
-                      id={`props.${index}.value`}
-                      name={`props.${index}.value`}
-                      placeholder="Value"
-                      className="flex-grow-1 appearance-none border-none rounded-sm focus:ring-0 outline-none"
-                    />
-                    <ErrorMessage
-                      name={`props.${index}.value`}
-                      component="div"
-                    />
-                    <Button className="flex-grow-0" type="button" onClick={() => remove(index)}>
-                      <MdDelete />
-                    </Button>
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  className="px-1"
-                  onClick={() => push({ key: "", value: "" })}
-                >
-                  Add Prop
-                </Button>
-              </div>
-            )}
-          </FieldArray>
+      {({ values }) => (
+        <Form className="flex flex-col gap-2">
+          <Field
+            type="text"
+            id="name"
+            name="name"
+            className="w-full border border-gray-300 rounded-sm p-1"
+            placeholder="Name"
+          />
+          <ErrorMessage
+            name="name"
+            component="div"
+            className="text-red-500 text-sm"
+          />
+          <Field
+            type="text"
+            id="type"
+            name="type"
+            className="w-full border border-gray-300 rounded-sm p-1"
+            placeholder="Type"
+          />
+          <ErrorMessage
+            name="type"
+            component="div"
+            className="text-red-500 text-sm"
+          />
+          <PropArrayField {...values} />
           {/* Add more prop fields as needed */}
           <Button
-            className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white"
-            onClick={close}
+            className="rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none"
             type="submit"
           >
-            Got it, thanks!
+            Save
           </Button>
         </Form>
       )}
     </Formik>
+  );
+};
+
+const PropArrayField = ({ props }: AddNodeFormValues) => {
+  return (
+    <FieldArray name="props">
+      {({ push, remove }) => (
+        <div className="flex flex-col gap-2">
+          <h3>Properties</h3>
+          {props.map((_, index) => (
+            <div key={index} className="flex gap-2 rounded-sm">
+              <Field
+                type="text"
+                id={`props.${index}.key`}
+                name={`props.${index}.key`}
+                placeholder="Key"
+                className="flex-grow-1 border border-gray-300 rounded-sm"
+              />
+              <ErrorMessage name={`props.${index}.key`} component="div" />
+              <Field
+                type="text"
+                id={`props.${index}.value`}
+                name={`props.${index}.value`}
+                placeholder="Value"
+                className="flex-grow-1 border border-gray-300 rounded-sm"
+              />
+              <ErrorMessage name={`props.${index}.value`} component="div" />
+              <Button
+                className="flex-grow-0 hover:text-red-800"
+                type="button"
+                onClick={() => remove(index)}
+              >
+                <MdDelete />
+              </Button>
+            </div>
+          ))}
+          <Button
+            type="button"
+            className="px-1"
+            onClick={() => {
+              if (!props.find(({ key }) => key === "")) {
+                push({ key: "", value: "" });
+              }
+            }}
+          >
+            Add Prop
+          </Button>
+        </div>
+      )}
+    </FieldArray>
   );
 };
 
