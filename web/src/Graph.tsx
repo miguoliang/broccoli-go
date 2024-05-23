@@ -27,6 +27,7 @@ import ReactFlow, {
 import * as Yup from "yup";
 import SearchBox from "./components/SearchBox";
 import useGraphStore from "./stores/GraphStore";
+import { useCreateVertex } from "./api";
 
 const AddNodeDialogContext = createContext<
   PropsWithChildren<{
@@ -128,11 +129,30 @@ const initialValues: AddNodeFormValues = {
 };
 
 const AddNodeForm = () => {
+  const mutation = useCreateVertex();
+  const { onClose } = useContext(AddNodeDialogContext);
+
   const handleSubmit = (values: AddNodeFormValues) => {
     // Handle form submission
     console.log(values);
+    mutation.mutate(
+      {
+        data: {
+          name: values.name,
+          type: values.type,
+          properties: values.props.reduce(
+            (acc, { key, value }) => ({ ...acc, [key]: value }),
+            {},
+          ),
+        },
+      },
+      {
+        onSuccess: () => {
+          onClose();
+        },
+      },
+    );
   };
-  const { onClose } = useContext(AddNodeDialogContext);
   return (
     <Formik
       initialValues={initialValues}
@@ -168,15 +188,17 @@ const AddNodeForm = () => {
           <PropArrayField {...values} />
           {/* Add more prop fields as needed */}
           <Button
-            className="rounded-sm bg-black py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none mt-5"
+            className="rounded-sm bg-black py-1.5 px-3 text-sm/6 font-semibold text-white focus:outline-none mt-5 disabled:opacity-50 disabled:cursor-not-allowed"
             type="submit"
+            disabled={mutation.isPending}
           >
-            Save
+            {mutation.isPending ? "Saving" : "Save"}
           </Button>
           <Button
             className="rounded-sm bg-white py-1.5 px-3 text-sm/6 font-semibold focus:outline-none border"
             type="reset"
             onClick={onClose}
+            disabled={mutation.isPending}
           >
             Close
           </Button>
