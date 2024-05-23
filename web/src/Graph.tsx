@@ -8,7 +8,13 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
-import { useState } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { MdDelete } from "react-icons/md";
 import ReactFlow, {
   Background,
@@ -22,11 +28,22 @@ import * as Yup from "yup";
 import SearchBox from "./components/SearchBox";
 import useGraphStore from "./stores/GraphStore";
 
+const AddNodeDialogContext = createContext<
+  PropsWithChildren<{
+    isOpen: boolean;
+    onClose: () => void;
+  }>
+>({ isOpen: false, onClose: () => {} });
+
 const Graph = () => {
   const { nodes, edges } = useGraphStore();
   const [isOpen, setIsOpen] = useState(false);
+  const dialogContextValue = useMemo(
+    () => ({ isOpen, onClose: () => setIsOpen(false) }),
+    [isOpen],
+  );
   return (
-    <>
+    <AddNodeDialogContext.Provider value={dialogContextValue}>
       <ReactFlowProvider>
         <ReactFlow nodes={nodes} edges={edges}>
           <Panel position="top-left">
@@ -42,17 +59,13 @@ const Graph = () => {
           <Background variant={BackgroundVariant.Dots} />
         </ReactFlow>
       </ReactFlowProvider>
-      <AddNodeDialog isOpen={isOpen} onClose={() => setIsOpen(false)} />
-    </>
+      <AddNodeDialog />
+    </AddNodeDialogContext.Provider>
   );
 };
 
-type AddNodeDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-const AddNodeDialog = ({ isOpen, onClose }: Readonly<AddNodeDialogProps>) => {
+const AddNodeDialog = () => {
+  const { isOpen, onClose } = useContext(AddNodeDialogContext);
   return (
     <Transition appear show={isOpen} as="div">
       <Dialog
@@ -119,7 +132,7 @@ const AddNodeForm = () => {
     // Handle form submission
     console.log(values);
   };
-
+  const { onClose } = useContext(AddNodeDialogContext);
   return (
     <Formik
       initialValues={initialValues}
@@ -127,7 +140,7 @@ const AddNodeForm = () => {
       onSubmit={handleSubmit}
     >
       {({ values }) => (
-        <Form className="flex flex-col gap-2">
+        <Form className="flex flex-col gap-4">
           <Field
             type="text"
             id="name"
@@ -155,10 +168,17 @@ const AddNodeForm = () => {
           <PropArrayField {...values} />
           {/* Add more prop fields as needed */}
           <Button
-            className="rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none"
+            className="rounded-sm bg-black py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none mt-5"
             type="submit"
           >
             Save
+          </Button>
+          <Button
+            className="rounded-sm bg-white py-1.5 px-3 text-sm/6 font-semibold focus:outline-none border"
+            type="reset"
+            onClick={onClose}
+          >
+            Close
           </Button>
         </Form>
       )}
@@ -201,7 +221,7 @@ const PropArrayField = ({ props }: AddNodeFormValues) => {
           ))}
           <Button
             type="button"
-            className="px-1"
+            className="px-1 underline underline-offset-8 hover:no-underline"
             onClick={() => {
               if (!props.find(({ key }) => key === "")) {
                 push({ key: "", value: "" });

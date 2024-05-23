@@ -5,5 +5,10 @@
     },
     "gopls": {
         "ui.semanticTokens": true,
-    }
+    },
+    "cSpell.words": [
+        "formik",
+        "headlessui",
+        "reactflow"
+    ]
 }
