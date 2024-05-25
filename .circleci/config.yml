@@ -31,7 +31,7 @@ jobs:
   test-go:
     executor:
       name: go/default
-      tag: 1.22.1
+      tag: 1.22.3
     steps:
       - checkout
       - go/load-cache
