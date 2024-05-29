@@ -10,5 +10,6 @@
         "formik",
         "headlessui",
         "reactflow"
-    ]
+    ],
+    "go.alternateTools": {}
 }
