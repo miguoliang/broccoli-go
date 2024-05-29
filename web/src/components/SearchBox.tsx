@@ -36,10 +36,10 @@ export default function SearchBox() {
         isOpen,
       }) => (
         <div>
-          <div className="p-1 flex justify-between bg-white">
+          <div className="p-1 flex justify-between bg-transparent">
             <Input
               {...getInputProps()}
-              className={"border-0 outline-0 flex-grow text-sm min-w-[200px] px-2 border-r placeholder:text-gray-300"}
+              className={"border-0 outline-0 flex-grow text-sm min-w-[200px] px-2 border-r placeholder:text-gray-300 bg-transparent"}
               placeholder={"Search"}
             />
           </div>

@@ -14,9 +14,9 @@ export default function AnonymousActions() {
   }, []);
 
   return (
-    <ul className={"flex space-x-10 ml-auto"}>
+    <ul className={"flex space-x-10"}>
       <li>
-        <button className="border-0 underline underline-offset-8 hover:bg-white hover:no-underline" onClick={login}>
+        <button className="border-0 underline underline-offset-8 bg-transparent hover:no-underline" onClick={login}>
           Login
         </button>
       </li>

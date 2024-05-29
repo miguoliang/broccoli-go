@@ -3,7 +3,7 @@ import { signOutUrl } from "../oidc.ts";
 
 export default function AuthenticatedActions({ user }: Readonly<{ user: User }>) {
   return (
-    <ul className={"flex space-x-2 ml-auto"}>
+    <ul className={"flex space-x-2"}>
       <li>
         <a
           href={"/profile"}

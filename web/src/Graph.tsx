@@ -99,9 +99,11 @@ const AddNodeDialog = () => {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <DialogTitle className="font-bold">Deactivate account</DialogTitle>
+            <DialogTitle className="font-bold">Add node</DialogTitle>
             <Description>
-              This will permanently deactivate your account
+              This will add a new node to the graph. Additionally, when a node
+              with the same name and type already exists, the properties will be
+              updated or added.
             </Description>
             <AddNodeForm />
           </TransitionChild>

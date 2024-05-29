@@ -8,6 +8,8 @@ import { User } from "oidc-client-ts";
 import AuthenticatedActions from "./components/AuthenticatedActions.tsx";
 import Profile from "./Profile.tsx";
 import Graph from "./Graph.tsx";
+import ColorModeSwitch from "./components/ColorModeSwitch.tsx";
+import useColorModeStore from "./stores/ColorModeStore.tsx";
 
 const queryClient = new QueryClient();
 
@@ -44,10 +46,11 @@ const UserActions = () => {
 };
 
 export default function App() {
+  const { colorMode } = useColorModeStore();
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter basename={"/"}>
-        <div className="h-screen flex flex-col">
+        <div className={`h-screen flex flex-col ${colorMode}`}>
           <header className={"w-full border-b shadow"}>
             <div
               className={
@@ -56,7 +59,10 @@ export default function App() {
             >
               <h1 className={"font-bold"}>Broccoli</h1>
               <NavigationBar />
-              <UserActions />
+              <div className="flex items-center ml-auto space-x-10">
+                <ColorModeSwitch />
+                <UserActions />
+              </div>
             </div>
           </header>
           <main className="flex-grow">
