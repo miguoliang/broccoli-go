@@ -118,6 +118,20 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 		DestinationBucket: bucket,
 	})
 
+	// host static docs on S3
+	docsBucket := awss3.NewBucket(stack, jsii.String("broccoli-go-docs-bucket"), &awss3.BucketProps{
+		WebsiteIndexDocument: jsii.String("index.html"),
+		Encryption:           awss3.BucketEncryption_S3_MANAGED,
+		PublicReadAccess:     jsii.Bool(false),
+	})
+
+	awss3deployment.NewBucketDeployment(stack, jsii.String("broccoli-go-docs-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
+		Sources: &[]awss3deployment.ISource{
+			awss3deployment.Source_Asset(jsii.String("../docs/build"), nil),
+		},
+		DestinationBucket: docsBucket,
+	})
+
 	return stack
 }
 

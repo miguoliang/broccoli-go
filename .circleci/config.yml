@@ -12,7 +12,7 @@ jobs:
       - attach_workspace:
           at: ~/project/reports
       - sonarcloud/scan
-  build-react:
+  build-web:
     machine:
       image: ubuntu-2204:2023.10.1
       docker_layer_caching: true
@@ -28,6 +28,22 @@ jobs:
           root: ~/project
           paths:
             - web/dist
+  build-docs:
+    machine:
+      image: ubuntu-2204:2023.10.1
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: cd docs && npm install
+      - run:
+          name: build
+          command: cd docs && npm run build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - docs/build
   test-go:
     executor:
       name: go/default
@@ -69,6 +85,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/project/web/dist
+      - attach_workspace:
+          at: ~/project/docs/build
       - aws-cli/assume_role_with_web_identity:
           region: ${AWS_REGION}
           role_arn: arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_ASSUME_ROLE}
@@ -90,9 +108,11 @@ workflows:
             - sonarcloud
           requires:
             - test-go
-      - build-react
+      - build-web
+      - build-docs
       - deploy:
           context:
             - aws-cli
           requires:
-            - build-react
+            - build-web
+            - build-docs

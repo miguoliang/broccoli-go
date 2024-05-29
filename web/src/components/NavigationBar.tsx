@@ -8,7 +8,7 @@ export default function NavigationBar() {
           <Link to={"/"}>Home</Link>
         </li>
         <li>
-          <Link to={"/docs"}>Docs</Link>
+          <a href={"/docs"}>Docs</a>
         </li>
         <li>
           <Link to={"/prices"}>Prices</Link>
