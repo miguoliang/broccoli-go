@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2/awscognito"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awss3"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awss3deployment"
 	"github.com/aws/aws-cdk-go/awscdklambdagoalpha/v2"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -105,31 +104,10 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 	})
 
 	// host static website on S3
-	bucket := awss3.NewBucket(stack, jsii.String("broccoli-go-bucket"), &awss3.BucketProps{
+	awss3.NewBucket(stack, jsii.String("broccoli-go-bucket"), &awss3.BucketProps{
 		WebsiteIndexDocument: jsii.String("index.html"),
 		Encryption:           awss3.BucketEncryption_S3_MANAGED,
 		PublicReadAccess:     jsii.Bool(false),
-	})
-
-	awss3deployment.NewBucketDeployment(stack, jsii.String("broccoli-go-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
-		Sources: &[]awss3deployment.ISource{
-			awss3deployment.Source_Asset(jsii.String("../web/dist"), nil),
-		},
-		DestinationBucket: bucket,
-	})
-
-	// host static docs on S3
-	docsBucket := awss3.NewBucket(stack, jsii.String("broccoli-go-docs-bucket"), &awss3.BucketProps{
-		WebsiteIndexDocument: jsii.String("index.html"),
-		Encryption:           awss3.BucketEncryption_S3_MANAGED,
-		PublicReadAccess:     jsii.Bool(false),
-	})
-
-	awss3deployment.NewBucketDeployment(stack, jsii.String("broccoli-go-docs-bucket-deployment"), &awss3deployment.BucketDeploymentProps{
-		Sources: &[]awss3deployment.ISource{
-			awss3deployment.Source_Asset(jsii.String("../docs/build"), nil),
-		},
-		DestinationBucket: docsBucket,
 	})
 
 	return stack
