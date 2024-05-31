@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awscognito"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awss3"
 	"github.com/aws/aws-cdk-go/awscdklambdagoalpha/v2"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -101,13 +100,6 @@ func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) aw
 			AuthorizationType: awsapigateway.AuthorizationType_COGNITO,
 			Authorizer:        authorizer,
 		},
-	})
-
-	// host static website on S3
-	awss3.NewBucket(stack, jsii.String("broccoli-go-bucket"), &awss3.BucketProps{
-		WebsiteIndexDocument: jsii.String("index.html"),
-		Encryption:           awss3.BucketEncryption_S3_MANAGED,
-		PublicReadAccess:     jsii.Bool(false),
 	})
 
 	return stack
