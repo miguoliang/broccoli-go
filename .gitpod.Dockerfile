@@ -1,5 +1,5 @@
 # You can find the new timestamped tags here: https://hub.docker.com/r/gitpod/workspace-base/tags
-FROM gitpod/workspace-base:latest
+FROM gitpod/workspace-base:2024-05-29-12-14-56
 
 # Change your version here
 ENV GO_VERSION=1.22.3
@@ -8,5 +8,6 @@ ENV GOPATH=$HOME/go-packages
 ENV GOROOT=$HOME/go
 ENV PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 RUN curl -fsSL https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz | tar xzs \
-    && printf '%s\n' 'export GOPATH=/workspace/go' \
-                      'export PATH=$GOPATH/bin:$PATH' > $HOME/.bashrc.d/300-go
+    && printf '%s\n' 'export GOPATH=/workspace/go' 'export PATH=$GOPATH/bin:$PATH' > $HOME/.bashrc.d/300-go
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+RUN npm install @openapitools/openapi-generator-cli -g
