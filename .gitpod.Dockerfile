@@ -1,5 +1,5 @@
 # You can find the new timestamped tags here: https://hub.docker.com/r/gitpod/workspace-base/tags
-FROM gitpod/workspace-base:2024-05-29-12-14-56
+FROM gitpod/workspace-full:2024-05-29-12-14-56
 
 # Change your version here
 ENV GO_VERSION=1.22.3

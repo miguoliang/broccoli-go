@@ -32,3 +32,5 @@ go.work
 broccoli-go
 
 __debug_bin*
+
+openapitools.json
