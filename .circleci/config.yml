@@ -19,6 +19,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install swag
+          command: go install github.com/swaggo/swag/cmd/swag@latest
+      - run:
           name: install openapi-generator-cli
           command: npm install @openapitools/openapi-generator-cli -g
       - run:
