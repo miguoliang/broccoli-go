@@ -12,38 +12,6 @@ jobs:
       - attach_workspace:
           at: ~/project/reports
       - sonarcloud/scan
-  build-web:
-    machine:
-      image: ubuntu-2204:2023.10.1
-      docker_layer_caching: true
-    steps:
-      - checkout
-      - run:
-          name: install dependencies
-          command: cd web && npm install
-      - run:
-          name: build
-          command: cd web && npm run build
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - web/dist
-  build-docs:
-    machine:
-      image: ubuntu-2204:2023.10.1
-      docker_layer_caching: true
-    steps:
-      - checkout
-      - run:
-          name: install dependencies
-          command: cd docs && npm install
-      - run:
-          name: build
-          command: cd docs && npm run build
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - docs/build
   test-go:
     executor:
       name: go/default
@@ -108,11 +76,6 @@ workflows:
             - sonarcloud
           requires:
             - test-go
-      - build-web
-      - build-docs
       - deploy:
           context:
             - aws-cli
-          requires:
-            - build-web
-            - build-docs
