@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "preinstall": "go install github.com/swaggo/swag/cmd/swag@latest",
     "generate": "npm run generate:swagger && npm run generate:openapi && npm run generate:orval",
-    "generate:swagger": "npm run generate:openapi && npm run generate:orval",
+    "generate:swagger": "swag init -g cmd/main.go -d ../,../cmd -o ../api -ot yaml",
     "generate:openapi": "openapi-generator-cli generate -i ../api/swagger.yaml -o ../api -g openapi-yaml --additional-properties=x-extension.openapi=3.0.0,outputFile=openapi.yaml",
     "generate:orval": "orval generate --config orval.config.cjs"
   },
