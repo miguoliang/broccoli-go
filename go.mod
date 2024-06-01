@@ -1,6 +1,6 @@
 module github.com/miguoliang/broccoli-go
 
-go 1.22.3
+go 1.22.2
 
 require (
 	github.com/aws/aws-lambda-go v1.47.0
@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	github.com/bytedance/sonic v1.11.7 // indirect
+	github.com/bytedance/sonic v1.11.8 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
