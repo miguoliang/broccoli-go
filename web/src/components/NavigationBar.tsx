@@ -8,7 +8,7 @@ export default function NavigationBar() {
           <Link to={"/"}>Home</Link>
         </li>
         <li>
-          <a href={"/docs"}>Docs</a>
+          <a href="https://miguoliang.github.io/broccoli-go/">Docs</a>
         </li>
         <li>
           <Link to={"/prices"}>Prices</Link>
