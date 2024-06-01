@@ -5,10 +5,14 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "npm run generate:orval && tsc && npm run lint && vite build",
+    "build": "npm run generate && tsc && npm run lint && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "generate:orval": "cd .. && sh scripts/generate_apis.sh && cd - && orval generate --config orval.config.cjs"
+    "preinstall": "go install github.com/swaggo/swag/cmd/swag@latest",
+    "generate": "npm run generate:swagger && npm run generate:openapi && npm run generate:orval",
+    "generate:swagger": "npm run generate:openapi && npm run generate:orval",
+    "generate:openapi": "openapi-generator-cli generate -i ../api/swagger.yaml -o ../api -g openapi-yaml --additional-properties=x-extension.openapi=3.0.0,outputFile=openapi.yaml",
+    "generate:orval": "orval generate --config orval.config.cjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.0.3",
@@ -30,6 +34,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.13.4",
     "@types/lodash-es": "^4.17.12",
     "@types/qs": "^6.9.15",
     "@types/react": "^18.3.2",
