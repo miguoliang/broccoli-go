@@ -10,7 +10,7 @@ const clientId = "5p99s5nl7nha5tfnpik3r0rb7j";
 const scope = "openid profile aws.cognito.signin.user.admin";
 const authority =
   "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_Qbzi9lvVB";
-const redirectUri = window.location.origin;
+const redirectUri = window.location.origin +"/";
 
 // Create cognito sign-up & sign-out url
 const query = new URLSearchParams();
